@@ -12,7 +12,7 @@ release.properties
 .settings/
 bin/
 
-# IntelliJ
+# Intellij
 .idea
 *.ipr
 *.iml
