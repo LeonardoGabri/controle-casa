@@ -4,27 +4,27 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.acme.api.filter.ResponsavelFilter;
-import org.acme.domain.model.Responsavel;
+import org.acme.api.filter.GrupoFilter;
+import org.acme.domain.model.Grupo;
 
 import java.util.*;
 
 @ApplicationScoped
-public class ResponsavelRepository implements PanacheRepository<Responsavel> {
-    public Optional<Responsavel> findById(UUID id) {
+public class GrupoRepository implements PanacheRepository<Grupo> {
+    public Optional<Grupo> findById(UUID id) {
         return find("id", id).firstResultOptional();
     }
 
-    public List<Responsavel> paginacaoComFiltros(ResponsavelFilter responsavelFilter, int page, int size) {
+    public List<Grupo> paginacaoComFiltros(GrupoFilter grupoFilter, int page, int size) {
         StringBuilder queryBuilder = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
 
-        if (responsavelFilter.getNome() != null && !responsavelFilter.getNome().isEmpty()) {
+        if (grupoFilter.getNome() != null && !grupoFilter.getNome().isEmpty()) {
             queryBuilder.append("upper(nome) like :nome");
-            params.put("nome", "%" + responsavelFilter.getNome().toUpperCase() + "%");
+            params.put("nome", "%" + grupoFilter.getNome().toUpperCase() + "%");
         }
 
-        PanacheQuery<Responsavel> query;
+        PanacheQuery<Grupo> query;
 
         if (queryBuilder.length() > 0) {
             query = find(queryBuilder.toString(), params);
