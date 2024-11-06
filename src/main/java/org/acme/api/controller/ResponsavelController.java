@@ -6,9 +6,11 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.api.dto.ResponsavelDTO;
+import org.acme.api.filter.ResponsavelFilter;
 import org.acme.api.request.ResponsavelRequest;
 import org.acme.domain.service.ResponsavelService;
 
+import java.util.List;
 import java.util.UUID;
 
 @Path("/responsavel")
@@ -45,4 +47,20 @@ public class ResponsavelController {
         responsavelService.deletarResponsavel(id);
         return Response.status(Response.Status.NO_CONTENT).build();
     }
+
+    @GET
+    @Path("{id}")
+    public Response buscarPorId(@PathParam("id") UUID id){
+        return Response.status(Response.Status.OK).entity(responsavelService.buscarResponsavelPorId(id)).build();
+    }
+
+    @GET
+    @Path("/filtros")
+    public Response buscarComFiltros(@BeanParam ResponsavelFilter responsavelFilter,
+                                     @QueryParam("page") int page,
+                                     @QueryParam("size") int size){
+        List<ResponsavelDTO> lista = responsavelService.listarResponsavelFiltros(responsavelFilter, page, size);
+        return Response.status(Response.Status.OK).entity(lista).build();
+    }
+
 }

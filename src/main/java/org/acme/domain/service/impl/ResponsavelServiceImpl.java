@@ -1,15 +1,18 @@
 package org.acme.domain.service.impl;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.acme.api.dto.ResponsavelDTO;
+import org.acme.api.filter.ResponsavelFilter;
 import org.acme.api.request.ResponsavelRequest;
 import org.acme.domain.model.Responsavel;
 import org.acme.domain.repository.ResponsavelRepository;
 import org.acme.domain.service.ResponsavelService;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -26,7 +29,7 @@ public class ResponsavelServiceImpl implements ResponsavelService {
     public ResponsavelServiceImpl(ResponsavelRepository responsavelRepository){
         this.responsavelRepository = responsavelRepository;
     }
-    
+
     @Transactional
     @Override
     public ResponsavelDTO inserirResponsavel(ResponsavelRequest responsavelRequest) {
@@ -51,8 +54,12 @@ public class ResponsavelServiceImpl implements ResponsavelService {
     }
 
     @Override
-    public ResponsavelDTO listarResponsavelFiltros(String nome) {
-        return null;
+    public List<ResponsavelDTO> listarResponsavelFiltros(ResponsavelFilter responsavelFilter, int page, int size) {
+        List<Responsavel> responsaveis = responsavelRepository.paginacaoComFiltros(responsavelFilter,page, size);
+
+        return responsaveis.stream()
+                .map(ResponsavelDTO::entityFromDTO)
+                .toList();
     }
 
     @Override
