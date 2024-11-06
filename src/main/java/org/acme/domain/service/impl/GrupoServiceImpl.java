@@ -42,7 +42,7 @@ public class GrupoServiceImpl implements GrupoService {
 
     @Override
     public GrupoDTO atualizarGrupo(GrupoRequest grupoRequest, UUID id) {
-        Grupo grupo = this.buscarPorId(id);
+        Grupo grupo = this.buscarGrupoPorId(id);
         try{
             grupo.setNome(grupoRequest.getNome());
             grupoRepository.persist(grupo);
@@ -62,22 +62,18 @@ public class GrupoServiceImpl implements GrupoService {
     }
 
     @Override
-    public GrupoDTO buscarGrupoPorId(UUID id) {
+    public Grupo buscarGrupoPorId(UUID id) {
         Grupo grupo = grupoRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
-        return GrupoDTO.entityFromDTO(grupo);
+        return grupo;
     }
 
     @Override
     public void deletarGrupo(UUID id) {
         try{
-            Grupo grupo = buscarPorId(id);
+            Grupo grupo = buscarGrupoPorId(id);
             grupoRepository.delete(grupo);
         }catch (RuntimeException e){
             throw new RuntimeException(String.format(ERRO_AO_DELETAR));
         }
-    }
-
-    private Grupo buscarPorId(UUID id){
-        return grupoRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format(MSG_NAO_ENCONTRADO, id)));
     }
 }

@@ -63,9 +63,9 @@ public class ResponsavelServiceImpl implements ResponsavelService {
     }
 
     @Override
-    public ResponsavelDTO buscarResponsavelPorId(UUID id) {
+    public Responsavel buscarResponsavelPorId(UUID id) {
         Responsavel responsavel = responsavelRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
-        return ResponsavelDTO.entityFromDTO(responsavel);
+        return responsavel;
     }
 
     @Override

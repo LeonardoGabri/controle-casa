@@ -12,7 +12,7 @@ public interface ResponsavelService {
     public ResponsavelDTO inserirResponsavel(ResponsavelRequest responsavelRequest);
     public ResponsavelDTO atualizarResponsavel(ResponsavelRequest responsavelRequest, UUID id);
     public List<ResponsavelDTO> listarResponsavelFiltros(ResponsavelFilter responsavelFilter, int page, int size);
-    public ResponsavelDTO buscarResponsavelPorId(UUID id);
+    public Responsavel buscarResponsavelPorId(UUID id);
 
     public void deletarResponsavel(UUID id);
 
