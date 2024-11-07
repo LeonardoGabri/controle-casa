@@ -2,7 +2,6 @@ package org.acme.domain.service.impl;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.acme.api.dto.GrupoDTO;
 import org.acme.api.filter.GrupoFilter;
@@ -32,6 +31,7 @@ public class GrupoServiceImpl implements GrupoService {
     @Transactional
     @Override
     public GrupoDTO inserirGrupo(GrupoRequest grupoRequest) {
+        validaNomeGrupo(grupoRequest, null);
         Grupo grupo = Grupo.builder()
                 .nome(grupoRequest.getNome())
                 .build();
@@ -40,9 +40,19 @@ public class GrupoServiceImpl implements GrupoService {
         return GrupoDTO.entityFromDTO(grupo);
     }
 
+    private void validaNomeGrupo(GrupoRequest grupoRequest, UUID grupoId) {
+        boolean fornecedorEncontrado = grupoRepository.find("upper(nome) = ?1 and (id != ?2 or ?2 is null)",
+                        grupoRequest.getNome().toUpperCase(), grupoId)
+                .list().isEmpty();
+        if (!fornecedorEncontrado) {
+            throw new RuntimeException(String.format(MSG_DUPLICADO));
+        }
+    }
+
     @Override
     public GrupoDTO atualizarGrupo(GrupoRequest grupoRequest, UUID id) {
         Grupo grupo = this.buscarGrupoPorId(id);
+        validaNomeGrupo(grupoRequest, id);
         try{
             grupo.setNome(grupoRequest.getNome());
             grupoRepository.persist(grupo);

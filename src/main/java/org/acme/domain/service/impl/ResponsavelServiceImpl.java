@@ -1,6 +1,5 @@
 package org.acme.domain.service.impl;
 
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,6 +32,7 @@ public class ResponsavelServiceImpl implements ResponsavelService {
     @Transactional
     @Override
     public ResponsavelDTO inserirResponsavel(ResponsavelRequest responsavelRequest) {
+        validaNomeResponsavel(responsavelRequest, null);
         Responsavel responsavel = Responsavel.builder()
                 .nome(responsavelRequest.getNome())
                 .build();
@@ -44,6 +44,7 @@ public class ResponsavelServiceImpl implements ResponsavelService {
     @Override
     public ResponsavelDTO atualizarResponsavel(ResponsavelRequest responsavelRequest, UUID id) {
         Responsavel responsavel = this.buscarPorId(id);
+        validaNomeResponsavel(responsavelRequest, id);
         try{
             responsavel.setNome(responsavelRequest.getNome());
             responsavelRepository.persist(responsavel);
@@ -51,6 +52,15 @@ public class ResponsavelServiceImpl implements ResponsavelService {
             throw new RuntimeException(String.format(ERRO_AO_SALVAR));
         }
         return ResponsavelDTO.entityFromDTO(responsavel);
+    }
+
+    private void validaNomeResponsavel(ResponsavelRequest responsavelRequest, UUID responsavelId) {
+        boolean fornecedorEncontrado = responsavelRepository.find("upper(nome) = ?1 and (id != ?2 or ?2 is null)",
+                        responsavelRequest.getNome().toUpperCase(), responsavelId)
+                .list().isEmpty();
+        if (!fornecedorEncontrado) {
+            throw new RuntimeException(String.format(MSG_DUPLICADO));
+        }
     }
 
     @Override
