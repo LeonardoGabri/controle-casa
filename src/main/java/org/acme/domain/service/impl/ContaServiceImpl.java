@@ -51,17 +51,20 @@ public class ContaServiceImpl implements ContaService {
         Banco banco = bancoService.buscarBancoPorId(UUID.fromString(contaRequest.getBancoId()));
         Responsavel responsavel = responsavelService.buscarResponsavelPorId(UUID.fromString(contaRequest.getResponsavelId()));
 
-        if (!buscarContaEResponsavel(UUID.fromString(contaRequest.getBancoId()), UUID.fromString(contaRequest.getResponsavelId()))) {
-            Conta conta = Conta.builder()
-                    .banco(banco)
-                    .responsavel(responsavel)
-                    .build();
+        Conta conta = Conta.builder()
+                .banco(banco)
+                .responsavel(responsavel)
+                .build();
 
-            contaRepository.persist(conta);
-            return ContaDTO.entityFromDTO(conta);
-        } else {
-            throw new RuntimeException(String.format(MSG_DUPLICADO));
-        }
+        contaRepository.persist(conta);
+        return ContaDTO.entityFromDTO(conta);
+
+
+//        if (!buscarContaEResponsavel(UUID.fromString(contaRequest.getBancoId()), UUID.fromString(contaRequest.getResponsavelId()))) {
+//
+//        } else {
+//            throw new RuntimeException(String.format(MSG_DUPLICADO));
+//        }
     }
 
     @Override
