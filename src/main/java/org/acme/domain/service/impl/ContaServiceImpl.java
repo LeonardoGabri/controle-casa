@@ -58,13 +58,6 @@ public class ContaServiceImpl implements ContaService {
 
         contaRepository.persist(conta);
         return ContaDTO.entityFromDTO(conta);
-
-
-//        if (!buscarContaEResponsavel(UUID.fromString(contaRequest.getBancoId()), UUID.fromString(contaRequest.getResponsavelId()))) {
-//
-//        } else {
-//            throw new RuntimeException(String.format(MSG_DUPLICADO));
-//        }
     }
 
     @Override
