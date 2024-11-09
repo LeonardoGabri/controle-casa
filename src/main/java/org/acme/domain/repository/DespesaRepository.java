@@ -1,15 +1,62 @@
 package org.acme.domain.repository;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.acme.api.filter.DespesaFilter;
 import org.acme.domain.model.Despesa;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @ApplicationScoped
 public class DespesaRepository implements PanacheRepository<Despesa> {
     public Optional<Despesa> findById(UUID id) {
         return find("id", id).firstResultOptional();
+    }
+
+    public List<Despesa> paginacaoComFiltros(DespesaFilter despesaFilter, int page, int size) {
+        StringBuilder queryBuilder = new StringBuilder();
+        Map<String, Object> params = new HashMap<>();
+
+        if (despesaFilter.getFornecedorId() != null && !despesaFilter.getFornecedorId().isEmpty()) {
+            queryBuilder.append("fornecedor.id = :fornecedor_id");
+            params.put("fornecedor_id", UUID.fromString(despesaFilter.getFornecedorId()));
+        }
+
+        if (despesaFilter.getBancoId() != null) {
+            if (queryBuilder.length() > 0) {
+                queryBuilder.append(" and ");
+            }
+            queryBuilder.append("banco.id = :banco_id");
+            params.put("banco_id", despesaFilter.getBancoId());
+        }
+
+        if (despesaFilter.getGrupoId() != null) {
+            if (queryBuilder.length() > 0) {
+                queryBuilder.append(" and ");
+            }
+            queryBuilder.append("grupo.id = :grupo_id");
+            params.put("grupo_id", despesaFilter.getGrupoId());
+        }
+
+        if (despesaFilter.getSituacao() != null) {
+            if (queryBuilder.length() > 0) {
+                queryBuilder.append(" and ");
+            }
+            queryBuilder.append("situacao = :situacao");
+            params.put("situacaosituacao", despesaFilter.getSituacao());
+        }
+
+        PanacheQuery<Despesa> query;
+
+        if (queryBuilder.length() > 0) {
+            query = find(queryBuilder.toString(), params);
+        } else {
+            query = findAll();
+        }
+
+        query.page(Page.of(page, size));
+        return query.list();
     }
 }

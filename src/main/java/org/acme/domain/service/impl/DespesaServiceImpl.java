@@ -3,6 +3,7 @@ package org.acme.domain.service.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.acme.api.filter.DespesaFilter;
 import org.acme.api.request.DespesaRequest;
 import org.acme.domain.enums.SituacaoEnum;
 import org.acme.domain.model.*;
@@ -70,17 +71,24 @@ public class DespesaServiceImpl implements DespesaService {
     }
 
     @Override
-    public Despesa atualizarDespesa() {
-        return null;
+    public Despesa atualizarDespesa(DespesaRequest despesaRequest, UUID id) {
+        deletarDespesa(id);
+        return inserirDespesa(despesaRequest);
     }
 
     @Override
-    public List<Despesa> listar() {
-        return null;
+    public List<Despesa> listar(DespesaFilter despesaFilter, int page, int size) {
+        return despesaRespository.paginacaoComFiltros(despesaFilter, page, size);
     }
 
     @Override
     public Despesa buscarDespesaPorId(UUID id) {
-        return null;
+        return despesaRespository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO)));
+    }
+
+    @Override
+    public void deletarDespesa(UUID id) {
+        Despesa despesa = buscarDespesaPorId(id);
+        despesaRespository.delete(despesa);
     }
 }
