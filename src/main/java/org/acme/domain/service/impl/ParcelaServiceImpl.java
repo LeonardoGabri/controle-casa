@@ -3,6 +3,7 @@ package org.acme.domain.service.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.acme.api.dto.ValoresDTO;
 import org.acme.api.filter.ParcelaFilter;
 import org.acme.api.request.ParcelaRequest;
 import org.acme.api.request.PlanejamentoParcelasRequest;
@@ -135,16 +136,25 @@ public class ParcelaServiceImpl implements ParcelaService {
             Parcela parcela = buscarParcelaPorId(id);
             parcela.setSituacao(SituacaoEnum.PAGO);
             parcelaRepository.persist(parcela);
-            long countPagas = parcela.getDespesa().getParcelas().stream()
-                    .filter(item -> item.getSituacao() == SituacaoEnum.PAGO)
-                    .count();
-
-            if (countPagas == parcela.getDespesa().getNParcelas()) {
-                despesaService.pagarDespesa(parcela.getDespesa().getId());
-            }
+            atualizarSituacaoDespesa(parcela);
             return parcela;
         }catch (Exception e){
             throw  new RuntimeException(String.format(ERRO_AO_PAGAR));
+        }
+    }
+
+    @Override
+    public ValoresDTO buscarValoresResponsavel(UUID responsavelId) {
+        return parcelaRepository.findValoresByResponsavelId(responsavelId);
+    }
+
+    private void atualizarSituacaoDespesa(Parcela parcela) {
+        long countPagas = parcela.getDespesa().getParcelas().stream()
+                .filter(item -> item.getSituacao() == SituacaoEnum.PAGO)
+                .count();
+
+        if (countPagas == parcela.getDespesa().getNParcelas()) {
+            despesaService.pagarDespesa(parcela.getDespesa().getId());
         }
     }
 }

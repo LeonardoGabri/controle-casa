@@ -28,12 +28,6 @@ public class Conta extends Base {
     @JoinColumn(name = "banco_id" )
     private Banco banco;
 
-    @Column(name = "valor_total")
-    private BigDecimal valorTotal;
-
-    @Column(name = "valor_total_ativo")
-    private BigDecimal valorTotalAtivo;
-
     @ManyToOne
     @JoinColumn(name = "responsavel_id" )
     private Responsavel responsavel;

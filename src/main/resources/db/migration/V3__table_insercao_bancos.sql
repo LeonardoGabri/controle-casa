@@ -11,4 +11,5 @@ VALUES
     ('53cf2170-d5a0-4898-b7c0-b5e766d93fa9', 'Bradesco', '237'),
     ('a8b05454-e3aa-401f-baaf-bda1e30e3ddb', 'Santander', '033'),
     ('db001a62-ab83-4897-9941-8d22a5b86eea', 'Nubank', '260'),
-    ('3cf53322-e196-4c90-ad57-90de34662a53', 'C6 Bank', '336');
+    ('3cf53322-e196-4c90-ad57-90de34662a53', 'C6 Bank', '336'),
+    ('d8983761-3eff-4bdd-bc72-92c7d802ffd1', 'Dinheiro', '000');

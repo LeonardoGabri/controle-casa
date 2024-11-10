@@ -30,10 +30,4 @@ public class Fornecedor extends Base {
     @ManyToOne(optional = true)
     @JoinColumn(name = "grupo_id", nullable = true )
     private Grupo grupo;
-
-    @Column(name = "valor_total")
-    private BigDecimal valorTotal;
-
-    @Column(name = "valor_total_ativo")
-    private BigDecimal valorTotalAtivo;
 }

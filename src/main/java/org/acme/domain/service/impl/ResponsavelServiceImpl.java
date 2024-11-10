@@ -5,10 +5,12 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.acme.api.dto.ResponsavelDTO;
+import org.acme.api.dto.ValoresDTO;
 import org.acme.api.filter.ResponsavelFilter;
 import org.acme.api.request.ResponsavelRequest;
 import org.acme.domain.model.Responsavel;
 import org.acme.domain.repository.ResponsavelRepository;
+import org.acme.domain.service.ParcelaService;
 import org.acme.domain.service.ResponsavelService;
 
 import java.util.List;
@@ -23,26 +25,28 @@ public class ResponsavelServiceImpl implements ResponsavelService {
     private final String ERRO_AO_SALVAR = "erro ao salvar registro";
     private final String ERRO_AO_DELETAR = "erro ao deletar registro";
     private ResponsavelRepository responsavelRepository;
+    private ParcelaService parcelaService;
 
     @Inject
-    public ResponsavelServiceImpl(ResponsavelRepository responsavelRepository){
+    public ResponsavelServiceImpl(ResponsavelRepository responsavelRepository, ParcelaService parcelaService){
         this.responsavelRepository = responsavelRepository;
+        this.parcelaService = parcelaService;
     }
 
     @Transactional
     @Override
-    public ResponsavelDTO inserirResponsavel(ResponsavelRequest responsavelRequest) {
+    public Responsavel inserirResponsavel(ResponsavelRequest responsavelRequest) {
         validaNomeResponsavel(responsavelRequest, null);
         Responsavel responsavel = Responsavel.builder()
                 .nome(responsavelRequest.getNome())
                 .build();
 
         responsavelRepository.persist(responsavel);
-        return ResponsavelDTO.entityFromDTO(responsavel);
+        return responsavel;
     }
 
     @Override
-    public ResponsavelDTO atualizarResponsavel(ResponsavelRequest responsavelRequest, UUID id) {
+    public Responsavel atualizarResponsavel(ResponsavelRequest responsavelRequest, UUID id) {
         Responsavel responsavel = this.buscarPorId(id);
         validaNomeResponsavel(responsavelRequest, id);
         try{
@@ -51,7 +55,7 @@ public class ResponsavelServiceImpl implements ResponsavelService {
         }catch (RuntimeException e){
             throw new RuntimeException(String.format(ERRO_AO_SALVAR));
         }
-        return ResponsavelDTO.entityFromDTO(responsavel);
+        return responsavel;
     }
 
     private void validaNomeResponsavel(ResponsavelRequest responsavelRequest, UUID responsavelId) {
@@ -64,17 +68,16 @@ public class ResponsavelServiceImpl implements ResponsavelService {
     }
 
     @Override
-    public List<ResponsavelDTO> listarResponsavelFiltros(ResponsavelFilter responsavelFilter, int page, int size) {
+    public List<Responsavel> listarResponsavelFiltros(ResponsavelFilter responsavelFilter, int page, int size) {
         List<Responsavel> responsaveis = responsavelRepository.paginacaoComFiltros(responsavelFilter,page, size);
 
-        return responsaveis.stream()
-                .map(ResponsavelDTO::entityFromDTO)
-                .toList();
+        return responsaveis;
     }
 
     @Override
     public Responsavel buscarResponsavelPorId(UUID id) {
         Responsavel responsavel = responsavelRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
+
         return responsavel;
     }
 

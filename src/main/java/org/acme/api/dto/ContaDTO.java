@@ -15,16 +15,14 @@ import java.util.UUID;
 public class ContaDTO {
     private UUID id;
     private String nome;
-    private BigDecimal valorTotalAtivo;
-    private BigDecimal valorTotal;
+//    private BigDecimal valorTotalAtivo;
+//    private BigDecimal valorTotal;
     private String responsavel;
 
     public static ContaDTO entityFromDTO(Conta conta){
         return new ContaDTO(
                 conta.getId(),
                 conta.getBanco().getNome(),
-                Optional.ofNullable(conta.getValorTotal()).orElse(BigDecimal.ZERO),
-                Optional.ofNullable(conta.getValorTotalAtivo()).orElse(BigDecimal.ZERO),
                 conta.getResponsavel().getNome()
         );
     }

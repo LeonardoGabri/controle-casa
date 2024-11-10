@@ -1,5 +1,6 @@
 package org.acme.domain.service;
 
+import org.acme.api.dto.ValoresDTO;
 import org.acme.api.filter.ParcelaFilter;
 import org.acme.api.request.ParcelaRequest;
 import org.acme.api.request.PlanejamentoParcelasRequest;
@@ -16,5 +17,6 @@ public interface ParcelaService {
     public Parcela buscarParcelaPorId(UUID id);
     public List<Parcela> calcularParcelas(Despesa despesaDTO, List<PlanejamentoParcelasRequest> planejamentoParcelasRequests);
     public Parcela pagarParcela(UUID id);
+    public ValoresDTO buscarValoresResponsavel(UUID responsavelId);
 
 }

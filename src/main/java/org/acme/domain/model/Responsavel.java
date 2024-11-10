@@ -27,10 +27,4 @@ public class Responsavel extends Base {
 
     @Column(name = "nome")
     private String nome;
-
-    @Column(name = "valor_total")
-    private BigDecimal valorTotal;
-
-    @Column(name = "valor_total_ativo")
-    private BigDecimal valorTotalAtivo;
 }

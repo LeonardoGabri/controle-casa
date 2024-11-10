@@ -4,9 +4,12 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.acme.api.dto.ValoresDTO;
 import org.acme.api.filter.ParcelaFilter;
+import org.acme.domain.enums.SituacaoEnum;
 import org.acme.domain.model.Parcela;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @ApplicationScoped
@@ -59,5 +62,22 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
         query.page(Page.of(page, size));
         return query.list();
     }
+
+    public ValoresDTO findValoresByResponsavelId(UUID responsavelId) {
+        Object[] result = (Object[]) getEntityManager()
+                .createQuery(
+                        "SELECT COALESCE(SUM(p.valor), 0), " +
+                                "COALESCE(SUM(CASE WHEN p.situacao = :situacao THEN p.valor ELSE 0 END), 0) " +
+                                "FROM Parcela p WHERE p.responsavel.id = :responsavelId")
+                .setParameter("responsavelId", responsavelId)
+                .setParameter("situacao", SituacaoEnum.ABERTA)
+                .getSingleResult();
+
+        return ValoresDTO.builder()
+                .valorTotal((BigDecimal) result[0])
+                .valorTotalAtivo((BigDecimal) result[1])
+                .build();
+    }
+
 
 }

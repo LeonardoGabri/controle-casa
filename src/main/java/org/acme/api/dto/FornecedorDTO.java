@@ -15,16 +15,14 @@ public class FornecedorDTO {
     private UUID id;
     private String nome;
     private String grupo;
-    private BigDecimal valorTotalAtivo;
-    private BigDecimal valorTotal;
+//    private BigDecimal valorTotalAtivo;
+//    private BigDecimal valorTotal;
 
     public static FornecedorDTO entityFromDTO(Fornecedor fornecedor){
         return new FornecedorDTO(
                 fornecedor.getId(),
                 fornecedor.getNome(),
-                fornecedor.getGrupo() != null ? fornecedor.getGrupo().getNome() : null,
-                Optional.ofNullable(fornecedor.getValorTotal()).orElse(BigDecimal.ZERO),
-                Optional.ofNullable(fornecedor.getValorTotalAtivo()).orElse(BigDecimal.ZERO)
+                fornecedor.getGrupo() != null ? fornecedor.getGrupo().getNome() : null
         );
     }
 }

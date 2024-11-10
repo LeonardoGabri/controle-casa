@@ -6,12 +6,16 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.api.dto.ResponsavelDTO;
+import org.acme.api.dto.ValoresDTO;
 import org.acme.api.filter.ResponsavelFilter;
 import org.acme.api.request.ResponsavelRequest;
+import org.acme.domain.model.Responsavel;
+import org.acme.domain.service.ParcelaService;
 import org.acme.domain.service.ResponsavelService;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Path("/responsavel")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -19,25 +23,29 @@ import java.util.UUID;
 public class ResponsavelController {
 
     private ResponsavelService responsavelService;
+    private ParcelaService parcelaService;
 
     @Inject
-    public ResponsavelController(ResponsavelService responsavelService){
+    public ResponsavelController(ResponsavelService responsavelService, ParcelaService parcelaService){
         this.responsavelService = responsavelService;
+        this.parcelaService = parcelaService;
     }
 
     @POST
     @Transactional
     public Response inserirResponsavel(ResponsavelRequest responsavelRequest){
-        ResponsavelDTO responsavelDTO = responsavelService.inserirResponsavel(responsavelRequest);
-        return Response.status(Response.Status.CREATED).entity(responsavelDTO).build();
+        Responsavel responsavel = responsavelService.inserirResponsavel(responsavelRequest);
+        ValoresDTO valoresDTO = parcelaService.buscarValoresResponsavel(responsavel.getId());
+        return Response.status(Response.Status.CREATED).entity(ResponsavelDTO.entityFromDTO(responsavel, valoresDTO)).build();
     }
 
     @PUT
     @Path("{id}")
     @Transactional
     public Response atualizarResponsavel(@PathParam("id") UUID id, ResponsavelRequest responsavelRequest){
-        ResponsavelDTO responsavelDTO = responsavelService.atualizarResponsavel(responsavelRequest, id);
-        return Response.status(Response.Status.OK).entity(responsavelDTO).build();
+        Responsavel responsavel = responsavelService.atualizarResponsavel(responsavelRequest, id);
+        ValoresDTO valoresDTO = parcelaService.buscarValoresResponsavel(id);
+        return Response.status(Response.Status.OK).entity(ResponsavelDTO.entityFromDTO(responsavel, valoresDTO)).build();
     }
 
     @DELETE
@@ -51,7 +59,9 @@ public class ResponsavelController {
     @GET
     @Path("{id}")
     public Response buscarPorId(@PathParam("id") UUID id){
-        return Response.status(Response.Status.OK).entity(responsavelService.buscarResponsavelPorId(id)).build();
+        Responsavel responsavel = responsavelService.buscarResponsavelPorId(id);
+        ValoresDTO valoresDTO = parcelaService.buscarValoresResponsavel(id);
+        return Response.status(Response.Status.OK).entity(ResponsavelDTO.entityFromDTO(responsavel, valoresDTO)).build();
     }
 
     @GET
@@ -59,8 +69,13 @@ public class ResponsavelController {
     public Response buscarComFiltros(@BeanParam ResponsavelFilter responsavelFilter,
                                      @QueryParam("page") int page,
                                      @QueryParam("size") int size){
-        List<ResponsavelDTO> lista = responsavelService.listarResponsavelFiltros(responsavelFilter, page, size);
-        return Response.status(Response.Status.OK).entity(lista).build();
+        List<Responsavel> lista = responsavelService.listarResponsavelFiltros(responsavelFilter, page, size);
+        List<ResponsavelDTO> dto = lista.stream()
+                .map(responsavel -> {
+                    ValoresDTO valoresDTO = parcelaService.buscarValoresResponsavel(responsavel.getId());
+                    return ResponsavelDTO.entityFromDTO(responsavel, valoresDTO);
+                }).collect(Collectors.toList());
+        return Response.status(Response.Status.OK).entity(dto).build();
     }
 
 }

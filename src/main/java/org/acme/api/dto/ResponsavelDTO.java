@@ -16,12 +16,12 @@ public class ResponsavelDTO {
     private BigDecimal valorTotalAtivo;
     private BigDecimal valorTotal;
 
-    public static ResponsavelDTO entityFromDTO(Responsavel responsavel){
+    public static ResponsavelDTO entityFromDTO(Responsavel responsavel, ValoresDTO valoresDTO){
         return new ResponsavelDTO(
                 responsavel.getId(),
                 responsavel.getNome(),
-                Optional.ofNullable(responsavel.getValorTotal()).orElse(BigDecimal.ZERO),
-                Optional.ofNullable(responsavel.getValorTotalAtivo()).orElse(BigDecimal.ZERO)
+                valoresDTO.getValorTotal(),
+                valoresDTO.getValorTotalAtivo()
         );
     }
 }
