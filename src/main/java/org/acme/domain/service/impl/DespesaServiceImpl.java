@@ -20,6 +20,7 @@ public class DespesaServiceImpl implements DespesaService {
     private final String MSG_NAO_ENCONTRADO = "Não encontrado registro com id = %s";
     private final String MSG_DUPLICADO = "Já cadastrado registro com nome = %s";
     private final String ERRO_AO_SALVAR = "erro ao salvar registro";
+    private final String ERRO_AO_PAGAR = "erro ao pagar despesa";
     private final String ERRO_AO_DELETAR = "erro ao deletar registro";
     private DespesaRepository despesaRespository;
     private ParcelaService parcelaService;
@@ -90,5 +91,17 @@ public class DespesaServiceImpl implements DespesaService {
     public void deletarDespesa(UUID id) {
         Despesa despesa = buscarDespesaPorId(id);
         despesaRespository.delete(despesa);
+    }
+
+    @Override
+    public Despesa pagarDespesa(UUID id) {
+        try{
+            Despesa despesa = buscarDespesaPorId(id);
+            despesa.setSituacao(SituacaoEnum.PAGO);
+            despesaRespository.persist(despesa);
+            return despesa;
+        }catch (Exception e){
+            throw new RuntimeException(String.format(ERRO_AO_PAGAR));
+        }
     }
 }

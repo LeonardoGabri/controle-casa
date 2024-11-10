@@ -13,4 +13,6 @@ public interface DespesaService {
     public List<Despesa> listar(DespesaFilter despesaFilter, int page, int size);
     public Despesa buscarDespesaPorId(UUID id);
     public void deletarDespesa(UUID id);
+
+    public Despesa pagarDespesa(UUID id);
 }

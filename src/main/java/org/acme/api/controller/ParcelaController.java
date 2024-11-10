@@ -47,4 +47,12 @@ private ParcelaService parcelaService;
         Parcela parcela = parcelaService.inserirParcela(parcelaRequest);
         return Response.status(Response.Status.CREATED).entity(ParcelaDTO.entityFromDTO(parcela)).build();
     }
+
+    @PUT
+    @Path("pagar-parcela/{id}")
+    @Transactional
+    public Response pagarParcela(@PathParam("id") String id){
+        Parcela parcela = parcelaService.pagarParcela(UUID.fromString(id));
+        return Response.status(Response.Status.CREATED).entity(ParcelaDTO.entityFromDTO(parcela)).build();
+    }
 }

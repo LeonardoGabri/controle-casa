@@ -28,6 +28,7 @@ public class ParcelaServiceImpl implements ParcelaService {
     private final String MSG_NAO_ENCONTRADO = "Não encontrado registro com id = %s";
     private final String MSG_DUPLICADO = "Já cadastrado registro com nome = %s";
     private final String ERRO_AO_SALVAR = "erro ao salvar registro";
+    private final String ERRO_AO_PAGAR = "erro ao pagar registro";
     private final String ERRO_AO_DELETAR = "erro ao deletar registro";
     private ParcelaRepository parcelaRepository;
     private ResponsavelService responsavelService;
@@ -125,5 +126,25 @@ public class ParcelaServiceImpl implements ParcelaService {
         });
 
         return parcelas;
+    }
+
+    @Override
+    @Transactional
+    public Parcela pagarParcela(UUID id) {
+        try{
+            Parcela parcela = buscarParcelaPorId(id);
+            parcela.setSituacao(SituacaoEnum.PAGO);
+            parcelaRepository.persist(parcela);
+            long countPagas = parcela.getDespesa().getParcelas().stream()
+                    .filter(item -> item.getSituacao() == SituacaoEnum.PAGO)
+                    .count();
+
+            if (countPagas == parcela.getDespesa().getNParcelas()) {
+                despesaService.pagarDespesa(parcela.getDespesa().getId());
+            }
+            return parcela;
+        }catch (Exception e){
+            throw  new RuntimeException(String.format(ERRO_AO_PAGAR));
+        }
     }
 }
