@@ -15,8 +15,6 @@ import java.util.UUID;
 public class ContaDTO {
     private UUID id;
     private String nome;
-//    private BigDecimal valorTotalAtivo;
-//    private BigDecimal valorTotal;
     private String responsavel;
 
     public static ContaDTO entityFromDTO(Conta conta){
