@@ -28,16 +28,16 @@ public class Despesa extends Base {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "banco_id")
-    private Banco banco;
+    @JoinColumn(name = "conta_id")
+    private Conta conta;
 
     @ManyToOne
     @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;
 
     @ManyToOne
-    @JoinColumn(name = "grupo_id")
-    private Grupo grupo;
+    @JoinColumn(name = "subgrupo_id")
+    private Subgrupo subgrupo;
 
     @Column(name = "n_parcelas")
     private Integer nParcelas;

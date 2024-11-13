@@ -3,6 +3,7 @@ package org.acme.api.dto;
 import lombok.Builder;
 import lombok.Data;
 import org.acme.domain.enums.SituacaoEnum;
+import org.acme.domain.model.Conta;
 import org.acme.domain.model.Despesa;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ import java.util.UUID;
 public class DespesaDTO {
 
     private UUID id;
-    private String bancoNome;
+    private Conta conta;
     private String fornecedorNome;
 
     private String grupoNome;
@@ -36,9 +37,9 @@ public class DespesaDTO {
     public static DespesaDTO entityFromDTO(Despesa despesa){
         return new DespesaDTO(
                 despesa.getId(),
-                despesa.getBanco().getNome(),
+                despesa.getConta(),
                 despesa.getFornecedor().getNome(),
-                despesa.getGrupo().getNome(),
+                despesa.getSubgrupo().getNome(),
                 despesa.getNParcelas(),
                 despesa.getValorTotal(),
                 despesa.getValorTotalAtivo(),

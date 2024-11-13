@@ -2,15 +2,16 @@ package org.acme.api.filter;
 
 import jakarta.ws.rs.QueryParam;
 import lombok.Data;
+import org.acme.domain.enums.SituacaoEnum;
 
 @Data
 public class DespesaFilter {
     @QueryParam("fornecedor")
     private String fornecedorId;
-    @QueryParam("banco")
-    private Integer bancoId;
-    @QueryParam("grupo")
-    private Integer grupoId;
+    @QueryParam("conta")
+    private String contaId;
+    @QueryParam("subgrupo")
+    private String subgrupoId;
     @QueryParam("situacao")
-    private Integer situacao;
+    private SituacaoEnum situacao;
 }

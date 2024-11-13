@@ -24,20 +24,20 @@ public class DespesaRepository implements PanacheRepository<Despesa> {
             params.put("fornecedor_id", UUID.fromString(despesaFilter.getFornecedorId()));
         }
 
-        if (despesaFilter.getBancoId() != null) {
+        if (despesaFilter.getContaId() != null) {
             if (queryBuilder.length() > 0) {
                 queryBuilder.append(" and ");
             }
-            queryBuilder.append("banco.id = :banco_id");
-            params.put("banco_id", despesaFilter.getBancoId());
+            queryBuilder.append("conta.id = :conta_id");
+            params.put("conta_id", despesaFilter.getContaId());
         }
 
-        if (despesaFilter.getGrupoId() != null) {
+        if (despesaFilter.getSubgrupoId() != null) {
             if (queryBuilder.length() > 0) {
                 queryBuilder.append(" and ");
             }
-            queryBuilder.append("grupo.id = :grupo_id");
-            params.put("grupo_id", despesaFilter.getGrupoId());
+            queryBuilder.append("subgrupo.id = :subgrupo_id");
+            params.put("subgrupo_id", despesaFilter.getSubgrupoId());
         }
 
         if (despesaFilter.getSituacao() != null) {

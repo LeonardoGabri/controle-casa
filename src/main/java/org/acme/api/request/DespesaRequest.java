@@ -9,9 +9,9 @@ import java.util.List;
 
 @Data
 public class DespesaRequest {
-    private String bancoId;
+    private String contaId;
     private String fornecedorId;
-    private String grupoId;
+    private String subgrupoId;
     private LocalDateTime dataLancamento;
     private Integer mesInicioCobranca;
     private Integer anoInicioCobranca;

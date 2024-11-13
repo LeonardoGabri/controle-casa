@@ -25,8 +25,8 @@ public class DespesaServiceImpl implements DespesaService {
     private DespesaRepository despesaRespository;
     private ParcelaService parcelaService;
     private FornecedorService fornecedorService;
-    private GrupoService grupoService;
-    private BancoService bancoService;
+    private SubgrupoService subgrupoService;
+    private ContaService contaService;
 
 
 
@@ -34,29 +34,29 @@ public class DespesaServiceImpl implements DespesaService {
     public DespesaServiceImpl(
             DespesaRepository despesaRespository,
             ParcelaService parcelaService,
-            BancoService bancoService,
+            ContaService contaService,
             FornecedorService fornecedorService,
-            GrupoService grupoService
+            SubgrupoService subgrupoService
     ){
         this.despesaRespository = despesaRespository;
         this.parcelaService = parcelaService;
-        this.bancoService = bancoService;
+        this.contaService = contaService;
         this.fornecedorService = fornecedorService;
-        this.grupoService = grupoService;
+        this.subgrupoService = subgrupoService;
     }
 
 
     @Override
     @Transactional
     public Despesa inserirDespesa(DespesaRequest despesaRequest) {
-        Banco banco = bancoService.buscarBancoPorId(UUID.fromString(despesaRequest.getBancoId()));
+        Conta conta = contaService.buscarContaPorId(UUID.fromString(despesaRequest.getContaId()));
         Fornecedor fornecedor = fornecedorService.buscarFornecedorPorId(UUID.fromString(despesaRequest.getFornecedorId()));
-        Grupo grupo = grupoService.buscarGrupoPorId(UUID.fromString(despesaRequest.getGrupoId()));
+        Subgrupo subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(despesaRequest.getSubgrupoId()));
 
         Despesa despesa = Despesa.builder()
-                .banco(banco)
+                .conta(conta)
                 .fornecedor(fornecedor)
-                .grupo(grupo)
+                .subgrupo(subgrupo)
                 .anoInicioCobranca(despesaRequest.getAnoInicioCobranca())
                 .mesInicioCobranca(despesaRequest.getMesInicioCobranca())
                 .nParcelas(despesaRequest.getNumeroParcelas())
