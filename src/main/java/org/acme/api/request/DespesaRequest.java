@@ -4,6 +4,7 @@ import lombok.Data;
 import org.acme.domain.enums.SituacaoEnum;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class DespesaRequest {
     private String contaId;
     private String fornecedorId;
     private String subgrupoId;
-    private LocalDateTime dataLancamento;
+    private LocalDate dataLancamento;
     private Integer mesInicioCobranca;
     private Integer anoInicioCobranca;
     private Integer numeroParcelas;

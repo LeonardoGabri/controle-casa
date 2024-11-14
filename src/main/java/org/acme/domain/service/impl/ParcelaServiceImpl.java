@@ -106,11 +106,11 @@ public class ParcelaServiceImpl implements ParcelaService {
             BigDecimal porcentagemDivisao = BigDecimal.valueOf(planejamentoParcelasRequest.getPorcentagemDivisao());
             BigDecimal valorParcela = valorTotal.multiply(porcentagemDivisao.divide(BigDecimal.valueOf(100)));
 
-            valorParcela = valorParcela.divide(BigDecimal.valueOf(despesa.getNParcelas()), 2, BigDecimal.ROUND_UP);
+            valorParcela = valorParcela.divide(BigDecimal.valueOf(despesa.getNumeroParcelas()), 2, BigDecimal.ROUND_UP);
 
             planejamentoParcelasRequest.setValor(valorParcela);
 
-            for (int i = 0; i < despesa.getNParcelas(); i++) {
+            for (int i = 0; i < despesa.getNumeroParcelas(); i++) {
                 LocalDate dataVencimentoParcela = dataInicialVencimento.plusMonths(i);
 
                 ParcelaRequest parcelaCalculada = ParcelaRequest.builder()
@@ -153,7 +153,7 @@ public class ParcelaServiceImpl implements ParcelaService {
                 .filter(item -> item.getSituacao() == SituacaoEnum.PAGO)
                 .count();
 
-        if (countPagas == parcela.getDespesa().getNParcelas()) {
+        if (countPagas == parcela.getDespesa().getNumeroParcelas()) {
             despesaService.pagarDespesa(parcela.getDespesa().getId());
         }
     }

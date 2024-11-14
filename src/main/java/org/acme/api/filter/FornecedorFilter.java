@@ -8,6 +8,6 @@ public class FornecedorFilter {
     @QueryParam("nome")
     private String nome;
 
-    @QueryParam("grupo")
-    private String grupoId;
+    @QueryParam("subgrupo")
+    private String subgrupoId;
 }

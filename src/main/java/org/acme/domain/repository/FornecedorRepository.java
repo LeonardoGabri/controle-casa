@@ -26,12 +26,12 @@ public class FornecedorRepository implements PanacheRepository<Fornecedor> {
             params.put("nome", "%" + fornecedorFilter.getNome().toUpperCase() + "%");
         }
 
-        if (fornecedorFilter.getGrupoId() != null && !fornecedorFilter.getGrupoId().isEmpty()) {
+        if (fornecedorFilter.getSubgrupoId() != null && !fornecedorFilter.getSubgrupoId().isEmpty()) {
             if (queryBuilder.length() > 0) {
                 queryBuilder.append(" and ");
             }
-            queryBuilder.append("grupo.id = :grupo_id");
-            params.put("grupo_id", UUID.fromString(fornecedorFilter.getGrupoId()));
+            queryBuilder.append("subgrupo.id = :subgrupo_id");
+            params.put("subgrupo_id", UUID.fromString(fornecedorFilter.getSubgrupoId()));
         }
 
         PanacheQuery<Fornecedor> query;

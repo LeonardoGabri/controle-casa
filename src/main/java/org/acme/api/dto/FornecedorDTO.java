@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.acme.domain.model.Banco;
 import org.acme.domain.model.Fornecedor;
+import org.acme.domain.model.Subgrupo;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -14,15 +15,13 @@ import java.util.UUID;
 public class FornecedorDTO {
     private UUID id;
     private String nome;
-    private String grupo;
-//    private BigDecimal valorTotalAtivo;
-//    private BigDecimal valorTotal;
+    private Subgrupo subgrupo;
 
     public static FornecedorDTO entityFromDTO(Fornecedor fornecedor){
         return new FornecedorDTO(
                 fornecedor.getId(),
                 fornecedor.getNome(),
-                fornecedor.getGrupo() != null ? fornecedor.getGrupo().getNome() : null
+                fornecedor.getSubgrupo() != null ? fornecedor.getSubgrupo() : null
         );
     }
 }

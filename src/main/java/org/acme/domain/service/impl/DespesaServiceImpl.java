@@ -22,6 +22,7 @@ public class DespesaServiceImpl implements DespesaService {
     private final String ERRO_AO_SALVAR = "erro ao salvar registro";
     private final String ERRO_AO_PAGAR = "erro ao pagar despesa";
     private final String ERRO_AO_DELETAR = "erro ao deletar registro";
+    private final String ERRO_NO_CALCULO_PORCENTAGEM = "A soma das porcentagens de divisão deve ser exatamente 100.";
     private DespesaRepository despesaRespository;
     private ParcelaService parcelaService;
     private FornecedorService fornecedorService;
@@ -53,13 +54,22 @@ public class DespesaServiceImpl implements DespesaService {
         Fornecedor fornecedor = fornecedorService.buscarFornecedorPorId(UUID.fromString(despesaRequest.getFornecedorId()));
         Subgrupo subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(despesaRequest.getSubgrupoId()));
 
+        double somaPorcentagem = despesaRequest.getPlanejamentoParcelas().stream()
+                .mapToDouble(item -> item.getPorcentagemDivisao())
+                .sum();
+
+        if (somaPorcentagem != 100.0) {
+            throw new IllegalArgumentException(String.format(ERRO_NO_CALCULO_PORCENTAGEM));
+        }
+
         Despesa despesa = Despesa.builder()
                 .conta(conta)
                 .fornecedor(fornecedor)
                 .subgrupo(subgrupo)
+                .dataLancamento(despesaRequest.getDataLancamento())
                 .anoInicioCobranca(despesaRequest.getAnoInicioCobranca())
                 .mesInicioCobranca(despesaRequest.getMesInicioCobranca())
-                .nParcelas(despesaRequest.getNumeroParcelas())
+                .numeroParcelas(despesaRequest.getNumeroParcelas())
                 .valorTotal(despesaRequest.getValorTotal())
                 .valorTotalAtivo(despesaRequest.getValorTotal())
                 .situacao(SituacaoEnum.ABERTA)
@@ -71,10 +81,35 @@ public class DespesaServiceImpl implements DespesaService {
         return despesa;
     }
 
+
     @Override
     public Despesa atualizarDespesa(DespesaRequest despesaRequest, UUID id) {
-        deletarDespesa(id);
-        return inserirDespesa(despesaRequest);
+        try {
+            if (despesaRequest.getPlanejamentoParcelas() != null) {
+                deletarDespesa(id);
+                return inserirDespesa(despesaRequest);
+            } else {
+                Conta conta = contaService.buscarContaPorId(UUID.fromString(despesaRequest.getContaId()));
+                Fornecedor fornecedor = fornecedorService.buscarFornecedorPorId(UUID.fromString(despesaRequest.getFornecedorId()));
+                Subgrupo subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(despesaRequest.getSubgrupoId()));
+                Despesa despesa = buscarDespesaPorId(id);
+
+                despesa.setConta(conta);
+                despesa.setFornecedor(fornecedor);
+                despesa.setSubgrupo(subgrupo);
+                despesa.setDataLancamento(despesaRequest.getDataLancamento());
+                despesa.setMesInicioCobranca(despesaRequest.getMesInicioCobranca());
+                despesa.setAnoInicioCobranca(despesaRequest.getAnoInicioCobranca());
+                despesa.setNumeroParcelas(despesaRequest.getNumeroParcelas());
+                despesa.setValorTotal(despesaRequest.getValorTotal());
+                despesa.setSituacao(SituacaoEnum.ABERTA);
+
+                despesaRespository.persist(despesa);
+                return despesa;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(String.format(ERRO_AO_SALVAR));
+        }
     }
 
     @Override

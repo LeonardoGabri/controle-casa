@@ -11,6 +11,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,12 +37,15 @@ public class Despesa extends Base {
     @JoinColumn(name = "fornecedor_id")
     private Fornecedor fornecedor;
 
+    @Column(name = "data_lancamento")
+    private LocalDate dataLancamento;
+
     @ManyToOne
     @JoinColumn(name = "subgrupo_id")
     private Subgrupo subgrupo;
 
     @Column(name = "n_parcelas")
-    private Integer nParcelas;
+    private Integer numeroParcelas;
 
     @Column(name = "valor_total")
     private BigDecimal valorTotal;

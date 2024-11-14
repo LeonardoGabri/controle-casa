@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class FornecedorRequest {
     private String nome;
-    private String grupoId;
+    private String subgrupoId;
 }

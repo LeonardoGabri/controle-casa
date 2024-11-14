@@ -3,3 +3,4 @@ CREATE TABLE subgrupo (
     nome varchar(255) NOT NULL,
     grupo_id UUID NOT NULL REFERENCES grupo(id)
 );
+

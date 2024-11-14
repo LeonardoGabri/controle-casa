@@ -5,8 +5,11 @@ import lombok.Data;
 import org.acme.domain.enums.SituacaoEnum;
 import org.acme.domain.model.Conta;
 import org.acme.domain.model.Despesa;
+import org.acme.domain.model.Fornecedor;
+import org.acme.domain.model.Subgrupo;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,20 +19,14 @@ public class DespesaDTO {
 
     private UUID id;
     private Conta conta;
-    private String fornecedorNome;
-
-    private String grupoNome;
-
-    private Integer nParcelas;
-
+    private Fornecedor fornecedor;
+    private Subgrupo subgrupo;
+    private LocalDate dataLancamento;
+    private Integer numeroParcelas;
     private BigDecimal valorTotal;
-
     private BigDecimal valorTotalAtivo;
-
     private Integer mesInicioCobranca;
-
     private Integer anoInicioCobranca;
-
     private SituacaoEnum situacao;
 
     private List<ParcelaDTO> parcelas;
@@ -38,9 +35,10 @@ public class DespesaDTO {
         return new DespesaDTO(
                 despesa.getId(),
                 despesa.getConta(),
-                despesa.getFornecedor().getNome(),
-                despesa.getSubgrupo().getNome(),
-                despesa.getNParcelas(),
+                despesa.getFornecedor(),
+                despesa.getSubgrupo(),
+                despesa.getDataLancamento(),
+                despesa.getNumeroParcelas(),
                 despesa.getValorTotal(),
                 despesa.getValorTotalAtivo(),
                 despesa.getMesInicioCobranca(),

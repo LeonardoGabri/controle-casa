@@ -27,14 +27,14 @@ public class FornecedorServiceImpl implements FornecedorService {
     private final String ERRO_AO_SALVAR = "erro ao salvar registro";
     private final String ERRO_AO_DELETAR = "erro ao deletar registro";
     private FornecedorRepository fornecedorRepository;
-    private GrupoService grupoService;
+    private SubgrupoService subgrupoService;
 
     private ModelMapper modelMapper;
 
     @Inject
-    public FornecedorServiceImpl(FornecedorRepository fornecedorRepository, GrupoService grupoService, ModelMapper modelMapper) {
+    public FornecedorServiceImpl(FornecedorRepository fornecedorRepository, SubgrupoService subgrupoService, ModelMapper modelMapper) {
         this.fornecedorRepository = fornecedorRepository;
-        this.grupoService = grupoService;
+        this.subgrupoService = subgrupoService;
         this.modelMapper = modelMapper;
     }
 
@@ -43,14 +43,14 @@ public class FornecedorServiceImpl implements FornecedorService {
     public FornecedorDTO inserirFornecedor(FornecedorRequest fornecedorRequest) {
         validaNomeFornecedor(fornecedorRequest, null);
 
-        Grupo grupo = null;
-        if (fornecedorRequest.getGrupoId() != null) {
-            grupo = grupoService.buscarGrupoPorId(UUID.fromString(fornecedorRequest.getGrupoId()));
+        Subgrupo subgrupo = null;
+        if (fornecedorRequest.getSubgrupoId() != null) {
+            subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(fornecedorRequest.getSubgrupoId()));
         }
 
         Fornecedor fornecedor = Fornecedor.builder()
                 .nome(fornecedorRequest.getNome())
-                .grupo(grupo)
+                .subgrupo(subgrupo)
                 .build();
 
         fornecedorRepository.persist(fornecedor);
@@ -71,14 +71,14 @@ public class FornecedorServiceImpl implements FornecedorService {
         Fornecedor fornecedor = this.buscarFornecedorPorId(id);
         validaNomeFornecedor(fornecedorRequest, id);
 
-        Grupo grupo = null;
-        if (fornecedorRequest.getGrupoId() != null) {
-            grupo = grupoService.buscarGrupoPorId(UUID.fromString(fornecedorRequest.getGrupoId()));
+        Subgrupo subgrupo = null;
+        if (fornecedorRequest.getSubgrupoId() != null) {
+            subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(fornecedorRequest.getSubgrupoId()));
         }
 
         try {
             fornecedor.setNome(fornecedorRequest.getNome());
-            fornecedor.setGrupo(grupo);
+            fornecedor.setSubgrupo(subgrupo);
             fornecedorRepository.persist(fornecedor);
         } catch (RuntimeException e) {
             throw new RuntimeException(String.format(ERRO_AO_SALVAR));

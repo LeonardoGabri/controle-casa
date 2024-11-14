@@ -28,6 +28,6 @@ public class Fornecedor extends Base {
     private String nome;
 
     @ManyToOne(optional = true)
-    @JoinColumn(name = "grupo_id", nullable = true )
-    private Grupo grupo;
+    @JoinColumn(name = "subgrupo_id", nullable = true )
+    private Subgrupo subgrupo;
 }
