@@ -27,20 +27,18 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
             params.put("responsavel_id", UUID.fromString(parcelaFilter.getResponsavelId()));
         }
 
-        if (parcelaFilter.getMesReferencia() != null) {
-            if (queryBuilder.length() > 0) {
-                queryBuilder.append(" and ");
-            }
-            queryBuilder.append("MONTH(dataVencimento) = :mesReferencia");
-            params.put("mesReferencia", parcelaFilter.getMesReferencia());
-        }
+        if (parcelaFilter.getReferenciaCobranca() != null && !parcelaFilter.getReferenciaCobranca().isEmpty()) {
+            // Extrai mês e ano do formato "MM/AAAA"
+            String[] mesAno = parcelaFilter.getReferenciaCobranca().split("/");
+            int mes = Integer.parseInt(mesAno[0]);
+            int ano = Integer.parseInt(mesAno[1]);
 
-        if (parcelaFilter.getAnoReferencia() != null) {
             if (queryBuilder.length() > 0) {
                 queryBuilder.append(" and ");
             }
-            queryBuilder.append("YEAR(dataVencimento) = :anoReferencia");
-            params.put("anoReferencia", parcelaFilter.getAnoReferencia());
+            queryBuilder.append("MONTH(dataVencimento) = :mesReferencia and YEAR(dataVencimento) = :anoReferencia");
+            params.put("mesReferencia", mes);
+            params.put("anoReferencia", ano);
         }
 
         if (parcelaFilter.getSituacao() != null) {
@@ -48,7 +46,7 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
                 queryBuilder.append(" and ");
             }
             queryBuilder.append("situacao = :situacao");
-            params.put("situacaosituacao", parcelaFilter.getSituacao());
+            params.put("situacao", parcelaFilter.getSituacao());
         }
 
         PanacheQuery<Parcela> query;

@@ -2,15 +2,14 @@ package org.acme.api.filter;
 
 import jakarta.ws.rs.QueryParam;
 import lombok.Data;
+import org.acme.domain.enums.SituacaoEnum;
 
 @Data
 public class ParcelaFilter {
     @QueryParam("responsavel")
     private String responsavelId;
-    @QueryParam("mesReferencia")
-    private Integer mesReferencia;
-    @QueryParam("anoReferencia")
-    private Integer anoReferencia;
+    @QueryParam("referenciaCobranca")
+    private String referenciaCobranca;
     @QueryParam("situacao")
-    private String situacao;
+    private SituacaoEnum situacao;
 }

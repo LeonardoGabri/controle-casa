@@ -29,7 +29,7 @@ public class DespesaRepository implements PanacheRepository<Despesa> {
                 queryBuilder.append(" and ");
             }
             queryBuilder.append("conta.id = :conta_id");
-            params.put("conta_id", despesaFilter.getContaId());
+            params.put("conta_id", UUID.fromString(despesaFilter.getContaId()));
         }
 
         if (despesaFilter.getSubgrupoId() != null) {
@@ -37,7 +37,7 @@ public class DespesaRepository implements PanacheRepository<Despesa> {
                 queryBuilder.append(" and ");
             }
             queryBuilder.append("subgrupo.id = :subgrupo_id");
-            params.put("subgrupo_id", despesaFilter.getSubgrupoId());
+            params.put("subgrupo_id", UUID.fromString(despesaFilter.getSubgrupoId()));
         }
 
         if (despesaFilter.getSituacao() != null) {
@@ -45,7 +45,7 @@ public class DespesaRepository implements PanacheRepository<Despesa> {
                 queryBuilder.append(" and ");
             }
             queryBuilder.append("situacao = :situacao");
-            params.put("situacaosituacao", despesaFilter.getSituacao());
+            params.put("situacao", despesaFilter.getSituacao());
         }
 
         PanacheQuery<Despesa> query;
