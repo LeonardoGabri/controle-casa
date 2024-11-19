@@ -54,6 +54,7 @@ public class ParcelaServiceImpl implements ParcelaService {
                     .dataVencimento(parcelaRequest.getDataVencimento())
                     .valor(parcelaRequest.getValor())
                     .situacao(parcelaRequest.getSituacao())
+                    .parcelaAtual(parcelaRequest.getParcelaAtual())
                     .porcentagemDivisao(parcelaRequest.getPorcentagemDivisao() != null ? parcelaRequest.getPorcentagemDivisao() : null)
                     .despesa(despesa)
                     .build();
@@ -73,6 +74,7 @@ public class ParcelaServiceImpl implements ParcelaService {
             parcela.setDataVencimento(parcelaRequest.getDataVencimento());
             parcela.setResponsavel(responsavel);
             parcela.setValor(parcelaRequest.getValor());
+            parcela.setParcelaAtual(parcelaRequest.getParcelaAtual());
             parcela.setPorcentagemDivisao(parcelaRequest.getPorcentagemDivisao());
             parcela.setSituacao(parcelaRequest.getSituacao());
             parcela.setDespesa(despesa);
@@ -116,6 +118,7 @@ public class ParcelaServiceImpl implements ParcelaService {
 
             for (int i = 0; i < despesa.getNumeroParcelas(); i++) {
                 LocalDate dataVencimentoParcela = dataInicialVencimento.plusMonths(i);
+                String parcelaAtual = (i + 1) + "/" + despesa.getNumeroParcelas();
 
                 ParcelaRequest parcelaCalculada = ParcelaRequest.builder()
                         .valor(valorParcela)
@@ -124,6 +127,7 @@ public class ParcelaServiceImpl implements ParcelaService {
                         .despesaId(despesa.getId().toString())
                         .porcentagemDivisao(planejamentoParcelasRequest.getPorcentagemDivisao())
                         .responsavelId(planejamentoParcelasRequest.getResponsavelId())
+                        .parcelaAtual(parcelaAtual)
                         .build();
 
                 parcelas.add(inserirParcela(parcelaCalculada));

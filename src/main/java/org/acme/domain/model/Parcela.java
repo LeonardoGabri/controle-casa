@@ -44,6 +44,9 @@ public class Parcela extends PanacheEntityBase {
     @Column(name = "porcentagem_divisao")
     private Double porcentagemDivisao;
 
+    @Column(name = "parcela_atual")
+    private String parcelaAtual;
+
     @ManyToOne
     @JoinColumn(name = "despesa_id")
     private Despesa despesa;

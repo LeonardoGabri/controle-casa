@@ -20,4 +20,6 @@ public class ParcelaRequest {
     private SituacaoEnum situacao;
     private Double porcentagemDivisao;
     private String despesaId;
+
+    private String parcelaAtual;
 }
