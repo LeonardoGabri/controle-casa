@@ -28,6 +28,7 @@ public class DespesaController {
     @POST
     @Transactional
     public Response inserirDespesa(DespesaRequest despesaRequest){
+        validarReferenciaCobranca(despesaRequest.getReferenciaCobranca());
         Despesa despesa = despesaService.inserirDespesa(despesaRequest);
         return Response.status(Response.Status.CREATED).entity(DespesaDTO.entityFromDTO(despesa)).build();
     }
@@ -65,5 +66,12 @@ public class DespesaController {
     public Response deletarDespesa(@PathParam("id") UUID id){
         despesaService.deletarDespesa(id);
         return Response.status(Response.Status.NO_CONTENT).build();
+    }
+
+    private void validarReferenciaCobranca(String referenciaCobranca) {
+        String regex = "^(0[1-9]|1[0-2])/\\d{4}$";
+        if (referenciaCobranca == null || !referenciaCobranca.matches(regex)) {
+            throw new IllegalArgumentException("O campo referenciaCobranca deve estar no formato MM/AAAA.");
+        }
     }
 }

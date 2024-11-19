@@ -67,8 +67,7 @@ public class DespesaServiceImpl implements DespesaService {
                 .fornecedor(fornecedor)
                 .subgrupo(subgrupo)
                 .dataLancamento(despesaRequest.getDataLancamento())
-                .anoInicioCobranca(despesaRequest.getAnoInicioCobranca())
-                .mesInicioCobranca(despesaRequest.getMesInicioCobranca())
+                .referenciaCobranca(despesaRequest.getReferenciaCobranca())
                 .numeroParcelas(despesaRequest.getNumeroParcelas())
                 .valorTotal(despesaRequest.getValorTotal())
                 .valorTotalAtivo(despesaRequest.getValorTotal())
@@ -98,8 +97,7 @@ public class DespesaServiceImpl implements DespesaService {
                 despesa.setFornecedor(fornecedor);
                 despesa.setSubgrupo(subgrupo);
                 despesa.setDataLancamento(despesaRequest.getDataLancamento());
-                despesa.setMesInicioCobranca(despesaRequest.getMesInicioCobranca());
-                despesa.setAnoInicioCobranca(despesaRequest.getAnoInicioCobranca());
+                despesa.setReferenciaCobranca(despesaRequest.getReferenciaCobranca());
                 despesa.setNumeroParcelas(despesaRequest.getNumeroParcelas());
                 despesa.setValorTotal(despesaRequest.getValorTotal());
                 despesa.setSituacao(SituacaoEnum.ABERTA);

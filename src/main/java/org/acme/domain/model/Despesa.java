@@ -53,11 +53,8 @@ public class Despesa extends Base {
     @Column(name = "valor_total_ativo")
     private BigDecimal valorTotalAtivo;
 
-    @Column(name = "mes_inicio_cobranca")
-    private Integer mesInicioCobranca;
-
-    @Column(name = "ano_inicio_cobranca")
-    private Integer anoInicioCobranca;
+    @Column(name = "referencia_cobranca")
+    private String referenciaCobranca;
 
     @Enumerated(EnumType.STRING)
     private SituacaoEnum situacao;

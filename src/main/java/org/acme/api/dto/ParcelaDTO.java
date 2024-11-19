@@ -15,20 +15,27 @@ import java.util.stream.Collectors;
 @Builder
 public class ParcelaDTO {
     private UUID id;
+    private UUID responsavelId;
     private String responsavelNome;
     private LocalDate dataVencimento;
     private BigDecimal valor;
     private SituacaoEnum situacao;
     private String despesaFornecedor;
+    private Double porcentagemDivisao;
+    private UUID despesaId;
+
 
     public static ParcelaDTO entityFromDTO(Parcela parcela){
         return new ParcelaDTO(
                 parcela.getId(),
+                parcela.getResponsavel().getId(),
                 parcela.getResponsavel().getNome(),
                 parcela.getDataVencimento(),
                 parcela.getValor(),
                 parcela.getSituacao(),
-                parcela.getDespesa().getFornecedor().getNome()
+                parcela.getDespesa().getFornecedor().getNome(),
+                parcela.getPorcentagemDivisao(),
+                parcela.getDespesa().getId()
         );
     }
 

@@ -54,7 +54,7 @@ public class ParcelaServiceImpl implements ParcelaService {
                     .dataVencimento(parcelaRequest.getDataVencimento())
                     .valor(parcelaRequest.getValor())
                     .situacao(parcelaRequest.getSituacao())
-                    .porcetagemDivisao(parcelaRequest.getPorcetagemDivisao() != null ? parcelaRequest.getPorcetagemDivisao() : null)
+                    .porcentagemDivisao(parcelaRequest.getPorcentagemDivisao() != null ? parcelaRequest.getPorcentagemDivisao() : null)
                     .despesa(despesa)
                     .build();
             parcelaRepository.persist(parcela);
@@ -73,7 +73,7 @@ public class ParcelaServiceImpl implements ParcelaService {
             parcela.setDataVencimento(parcelaRequest.getDataVencimento());
             parcela.setResponsavel(responsavel);
             parcela.setValor(parcelaRequest.getValor());
-            parcela.setPorcetagemDivisao(parcelaRequest.getPorcetagemDivisao());
+            parcela.setPorcentagemDivisao(parcelaRequest.getPorcentagemDivisao());
             parcela.setSituacao(parcelaRequest.getSituacao());
             parcela.setDespesa(despesa);
 
@@ -99,7 +99,11 @@ public class ParcelaServiceImpl implements ParcelaService {
     public List<Parcela> calcularParcelas(Despesa despesa, List<PlanejamentoParcelasRequest> planejamentoParcelasRequests) {
         List<Parcela> parcelas = new ArrayList<>();
 
-        LocalDate dataInicialVencimento = LocalDate.of(despesa.getAnoInicioCobranca(), despesa.getMesInicioCobranca(), 1);
+        String[] referencia = despesa.getReferenciaCobranca().split("/");
+        int mesInicio = Integer.parseInt(referencia[0]);
+        int anoInicio = Integer.parseInt(referencia[1]);
+
+        LocalDate dataInicialVencimento = LocalDate.of(anoInicio, mesInicio, 1);
 
         planejamentoParcelasRequests.forEach(planejamentoParcelasRequest -> {
             BigDecimal valorTotal = despesa.getValorTotal();
@@ -118,7 +122,7 @@ public class ParcelaServiceImpl implements ParcelaService {
                         .situacao(SituacaoEnum.ABERTA)
                         .dataVencimento(dataVencimentoParcela)
                         .despesaId(despesa.getId().toString())
-                        .porcetagemDivisao(planejamentoParcelasRequest.getPorcentagemDivisao())
+                        .porcentagemDivisao(planejamentoParcelasRequest.getPorcentagemDivisao())
                         .responsavelId(planejamentoParcelasRequest.getResponsavelId())
                         .build();
 

@@ -49,6 +49,14 @@ private ParcelaService parcelaService;
     }
 
     @PUT
+    @Path("{id}")
+    @Transactional
+    public Response atualizarParcelas(@PathParam("id") String id, ParcelaRequest parcelaRequest){
+        Parcela parcela = parcelaService.atualizarParcela(parcelaRequest, UUID.fromString(id));
+        return Response.status(Response.Status.OK).entity(ParcelaDTO.entityFromDTO(parcela)).build();
+    }
+
+    @PUT
     @Path("pagar-parcela/{id}")
     @Transactional
     public Response pagarParcela(@PathParam("id") String id){
