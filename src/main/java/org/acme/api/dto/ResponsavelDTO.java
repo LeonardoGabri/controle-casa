@@ -13,15 +13,11 @@ import java.util.UUID;
 public class ResponsavelDTO {
     private UUID id;
     private String nome;
-    private BigDecimal valorTotalAtivo;
-    private BigDecimal valorTotal;
 
-    public static ResponsavelDTO entityFromDTO(Responsavel responsavel, ValoresDTO valoresDTO){
+    public static ResponsavelDTO entityFromDTO(Responsavel responsavel){
         return new ResponsavelDTO(
                 responsavel.getId(),
-                responsavel.getNome(),
-                valoresDTO.getValorTotal(),
-                valoresDTO.getValorTotalAtivo()
+                responsavel.getNome()
         );
     }
 }

@@ -13,6 +13,7 @@ import org.acme.domain.model.Responsavel;
 import org.acme.domain.service.ParcelaService;
 import org.acme.domain.service.ResponsavelService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,8 +36,7 @@ public class ResponsavelController {
     @Transactional
     public Response inserirResponsavel(ResponsavelRequest responsavelRequest){
         Responsavel responsavel = responsavelService.inserirResponsavel(responsavelRequest);
-        ValoresDTO valoresDTO = parcelaService.buscarValoresResponsavel(responsavel.getId());
-        return Response.status(Response.Status.CREATED).entity(ResponsavelDTO.entityFromDTO(responsavel, valoresDTO)).build();
+        return Response.status(Response.Status.CREATED).entity(ResponsavelDTO.entityFromDTO(responsavel)).build();
     }
 
     @PUT
@@ -44,8 +44,7 @@ public class ResponsavelController {
     @Transactional
     public Response atualizarResponsavel(@PathParam("id") UUID id, ResponsavelRequest responsavelRequest){
         Responsavel responsavel = responsavelService.atualizarResponsavel(responsavelRequest, id);
-        ValoresDTO valoresDTO = parcelaService.buscarValoresResponsavel(id);
-        return Response.status(Response.Status.OK).entity(ResponsavelDTO.entityFromDTO(responsavel, valoresDTO)).build();
+        return Response.status(Response.Status.OK).entity(ResponsavelDTO.entityFromDTO(responsavel)).build();
     }
 
     @DELETE
@@ -60,8 +59,7 @@ public class ResponsavelController {
     @Path("{id}")
     public Response buscarPorId(@PathParam("id") UUID id){
         Responsavel responsavel = responsavelService.buscarResponsavelPorId(id);
-        ValoresDTO valoresDTO = parcelaService.buscarValoresResponsavel(id);
-        return Response.status(Response.Status.OK).entity(ResponsavelDTO.entityFromDTO(responsavel, valoresDTO)).build();
+        return Response.status(Response.Status.OK).entity(ResponsavelDTO.entityFromDTO(responsavel)).build();
     }
 
     @GET
@@ -70,11 +68,11 @@ public class ResponsavelController {
                                      @QueryParam("page") int page,
                                      @QueryParam("size") int size){
         List<Responsavel> lista = responsavelService.listarResponsavelFiltros(responsavelFilter, page, size);
-        List<ResponsavelDTO> dto = lista.stream()
-                .map(responsavel -> {
-                    ValoresDTO valoresDTO = parcelaService.buscarValoresResponsavel(responsavel.getId());
-                    return ResponsavelDTO.entityFromDTO(responsavel, valoresDTO);
-                }).collect(Collectors.toList());
+        List<ResponsavelDTO> dto = new ArrayList<>();
+        for (Responsavel responsavel : lista) {
+            ResponsavelDTO responsavelDTO = ResponsavelDTO.entityFromDTO(responsavel);
+            dto.add(responsavelDTO);
+        }
         return Response.status(Response.Status.OK).entity(dto).build();
     }
 

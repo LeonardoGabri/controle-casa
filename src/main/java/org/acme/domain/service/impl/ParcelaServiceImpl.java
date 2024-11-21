@@ -108,15 +108,22 @@ public class ParcelaServiceImpl implements ParcelaService {
         planejamentoParcelasRequests.forEach(planejamentoParcelasRequest -> {
             BigDecimal valorTotal = despesa.getValorTotal();
             BigDecimal porcentagemDivisao = BigDecimal.valueOf(planejamentoParcelasRequest.getPorcentagemDivisao());
-            BigDecimal valorParcela = valorTotal.multiply(porcentagemDivisao.divide(BigDecimal.valueOf(100)));
+            BigDecimal valorPlanejamento = valorTotal.multiply(porcentagemDivisao.divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP));
 
-            valorParcela = valorParcela.divide(BigDecimal.valueOf(despesa.getNumeroParcelas()), 2, BigDecimal.ROUND_UP);
-
-            planejamentoParcelasRequest.setValor(valorParcela);
+            BigDecimal valorBaseParcela = valorPlanejamento.divide(BigDecimal.valueOf(despesa.getNumeroParcelas()), 2, BigDecimal.ROUND_DOWN);
+            BigDecimal somaParcelas = BigDecimal.ZERO;
 
             for (int i = 0; i < despesa.getNumeroParcelas(); i++) {
                 LocalDate dataVencimentoParcela = dataInicialVencimento.plusMonths(i);
                 String parcelaAtual = (i + 1) + "/" + despesa.getNumeroParcelas();
+
+                BigDecimal valorParcela = valorBaseParcela;
+
+                if (i == despesa.getNumeroParcelas() - 1) {
+                    valorParcela = valorPlanejamento.subtract(somaParcelas);
+                } else {
+                    somaParcelas = somaParcelas.add(valorBaseParcela);
+                }
 
                 ParcelaRequest parcelaCalculada = ParcelaRequest.builder()
                         .valor(valorParcela)
@@ -133,10 +140,4 @@ public class ParcelaServiceImpl implements ParcelaService {
 
         return parcelas;
     }
-
-    @Override
-    public ValoresDTO buscarValoresResponsavel(UUID responsavelId) {
-        return parcelaRepository.findValoresByResponsavelId(responsavelId);
-    }
-
 }

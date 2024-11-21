@@ -16,6 +16,4 @@ public interface ParcelaService {
     public List<Parcela> listar(ParcelaFilter parcelaFilter, int page, int size);
     public Parcela buscarParcelaPorId(UUID id);
     public List<Parcela> calcularParcelas(Despesa despesaDTO, List<PlanejamentoParcelasRequest> planejamentoParcelasRequests);
-    public ValoresDTO buscarValoresResponsavel(UUID responsavelId);
-
 }

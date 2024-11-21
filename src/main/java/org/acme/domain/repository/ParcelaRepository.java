@@ -28,7 +28,6 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
         }
 
         if (parcelaFilter.getReferenciaCobranca() != null && !parcelaFilter.getReferenciaCobranca().isEmpty()) {
-            // Extrai mês e ano do formato "MM/AAAA"
             String[] mesAno = parcelaFilter.getReferenciaCobranca().split("/");
             int mes = Integer.parseInt(mesAno[0]);
             int ano = Integer.parseInt(mesAno[1]);
@@ -52,22 +51,4 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
         query.page(Page.of(page, size));
         return query.list();
     }
-
-    public ValoresDTO findValoresByResponsavelId(UUID responsavelId) {
-        Object[] result = (Object[]) getEntityManager()
-                .createQuery(
-                        "SELECT COALESCE(SUM(p.valor), 0), " +
-                                "COALESCE(SUM(CASE WHEN p.situacao = :situacao THEN p.valor ELSE 0 END), 0) " +
-                                "FROM Parcela p WHERE p.responsavel.id = :responsavelId")
-                .setParameter("responsavelId", responsavelId)
-                .setParameter("situacao", SituacaoEnum.ABERTA)
-                .getSingleResult();
-
-        return ValoresDTO.builder()
-                .valorTotal((BigDecimal) result[0])
-                .valorTotalAtivo((BigDecimal) result[1])
-                .build();
-    }
-
-
 }
