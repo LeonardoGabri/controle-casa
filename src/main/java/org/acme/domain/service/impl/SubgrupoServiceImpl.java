@@ -32,7 +32,10 @@ public class SubgrupoServiceImpl implements SubgrupoService {
     @Override
     public Subgrupo inserirSubgrupo(SubgrupoRequest subgrupoRequest) {
         validaNomeSubgrupo(subgrupoRequest, null);
-        Grupo grupo = grupoService.buscarGrupoPorId(UUID.fromString(subgrupoRequest.getGrupoId()));
+        Grupo grupo = null;
+        if(subgrupoRequest.getGrupoId() != null){
+            grupo = grupoService.buscarGrupoPorId(UUID.fromString(subgrupoRequest.getGrupoId()));
+        }
         Subgrupo subgrupo = Subgrupo.builder()
                 .nome(subgrupoRequest.getNome())
                 .grupo(grupo)
@@ -47,7 +50,7 @@ public class SubgrupoServiceImpl implements SubgrupoService {
                         subgrupoRequest.getNome().toUpperCase(), subgrupoId)
                 .list().isEmpty();
         if (!fornecedorEncontrado) {
-            throw new RuntimeException(String.format(MSG_DUPLICADO));
+            throw new RuntimeException(String.format(MSG_DUPLICADO,  subgrupoRequest.getNome()));
         }
     }
 
