@@ -5,6 +5,5 @@ CREATE TABLE parcela (
     data_vencimento DATE NOT NULL,
     valor DECIMAL NOT NULL CHECK (valor >= 0),
     porcentagem_divisao DECIMAL NOT NULL CHECK (valor >= 0),
-    situacao VARCHAR(50) NOT NULL,
     parcela_atual VARCHAR(50) NOT NUll
 );

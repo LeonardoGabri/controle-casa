@@ -71,7 +71,6 @@ public class DespesaServiceImpl implements DespesaService {
                 .numeroParcelas(despesaRequest.getNumeroParcelas())
                 .valorTotal(despesaRequest.getValorTotal())
                 .valorTotalAtivo(despesaRequest.getValorTotal())
-                .situacao(SituacaoEnum.ABERTA)
                 .build();
         despesaRespository.persist(despesa);
 
@@ -100,7 +99,6 @@ public class DespesaServiceImpl implements DespesaService {
                 despesa.setReferenciaCobranca(despesaRequest.getReferenciaCobranca());
                 despesa.setNumeroParcelas(despesaRequest.getNumeroParcelas());
                 despesa.setValorTotal(despesaRequest.getValorTotal());
-                despesa.setSituacao(SituacaoEnum.ABERTA);
 
                 despesaRespository.persist(despesa);
                 return despesa;
@@ -124,17 +122,5 @@ public class DespesaServiceImpl implements DespesaService {
     public void deletarDespesa(UUID id) {
         Despesa despesa = buscarDespesaPorId(id);
         despesaRespository.delete(despesa);
-    }
-
-    @Override
-    public Despesa pagarDespesa(UUID id) {
-        try{
-            Despesa despesa = buscarDespesaPorId(id);
-            despesa.setSituacao(SituacaoEnum.PAGO);
-            despesaRespository.persist(despesa);
-            return despesa;
-        }catch (Exception e){
-            throw new RuntimeException(String.format(ERRO_AO_PAGAR));
-        }
     }
 }

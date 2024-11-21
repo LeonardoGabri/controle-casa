@@ -37,10 +37,6 @@ public class Parcela extends PanacheEntityBase {
     @Column(name = "valor")
     private BigDecimal valor;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "situacao")
-    private SituacaoEnum situacao;
-
     @Column(name = "porcentagem_divisao")
     private Double porcentagemDivisao;
 

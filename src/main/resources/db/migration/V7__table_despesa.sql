@@ -7,6 +7,5 @@ CREATE TABLE despesa (
     n_parcelas int NOT NULL CHECK (n_parcelas >= 0),
     valor_total DECIMAL NOT NULL CHECK (valor_total >= 0),
     valor_total_ativo DECIMAL CHECK (valor_total_ativo >= 0),
-    referencia_cobranca VARCHAR(10),
-    situacao VARCHAR(50) NOT NULL
+    referencia_cobranca VARCHAR(10)
 );

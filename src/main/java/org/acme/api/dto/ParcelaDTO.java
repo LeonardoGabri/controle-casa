@@ -19,7 +19,6 @@ public class ParcelaDTO {
     private String responsavelNome;
     private LocalDate dataVencimento;
     private BigDecimal valor;
-    private SituacaoEnum situacao;
     private String parcelaAtual;
     private String despesaFornecedor;
     private Double porcentagemDivisao;
@@ -33,7 +32,6 @@ public class ParcelaDTO {
                 parcela.getResponsavel().getNome(),
                 parcela.getDataVencimento(),
                 parcela.getValor(),
-                parcela.getSituacao(),
                 parcela.getParcelaAtual(),
                 parcela.getDespesa().getFornecedor().getNome(),
                 parcela.getPorcentagemDivisao(),

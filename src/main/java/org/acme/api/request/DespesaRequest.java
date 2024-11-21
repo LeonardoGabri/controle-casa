@@ -20,5 +20,4 @@ public class DespesaRequest {
     private Integer numeroParcelas;
     private BigDecimal valorTotal;
     List<PlanejamentoParcelasRequest> planejamentoParcelas;
-    private SituacaoEnum situacao;
 }

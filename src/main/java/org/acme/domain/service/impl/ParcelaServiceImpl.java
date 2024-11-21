@@ -53,7 +53,6 @@ public class ParcelaServiceImpl implements ParcelaService {
                     .responsavel(responsavel)
                     .dataVencimento(parcelaRequest.getDataVencimento())
                     .valor(parcelaRequest.getValor())
-                    .situacao(parcelaRequest.getSituacao())
                     .parcelaAtual(parcelaRequest.getParcelaAtual())
                     .porcentagemDivisao(parcelaRequest.getPorcentagemDivisao() != null ? parcelaRequest.getPorcentagemDivisao() : null)
                     .despesa(despesa)
@@ -76,7 +75,6 @@ public class ParcelaServiceImpl implements ParcelaService {
             parcela.setValor(parcelaRequest.getValor());
             parcela.setParcelaAtual(parcelaRequest.getParcelaAtual());
             parcela.setPorcentagemDivisao(parcelaRequest.getPorcentagemDivisao());
-            parcela.setSituacao(parcelaRequest.getSituacao());
             parcela.setDespesa(despesa);
 
             parcelaRepository.persist(parcela);
@@ -122,7 +120,6 @@ public class ParcelaServiceImpl implements ParcelaService {
 
                 ParcelaRequest parcelaCalculada = ParcelaRequest.builder()
                         .valor(valorParcela)
-                        .situacao(SituacaoEnum.ABERTA)
                         .dataVencimento(dataVencimentoParcela)
                         .despesaId(despesa.getId().toString())
                         .porcentagemDivisao(planejamentoParcelasRequest.getPorcentagemDivisao())
@@ -138,31 +135,8 @@ public class ParcelaServiceImpl implements ParcelaService {
     }
 
     @Override
-    @Transactional
-    public Parcela pagarParcela(UUID id) {
-        try{
-            Parcela parcela = buscarParcelaPorId(id);
-            parcela.setSituacao(SituacaoEnum.PAGO);
-            parcelaRepository.persist(parcela);
-            atualizarSituacaoDespesa(parcela);
-            return parcela;
-        }catch (Exception e){
-            throw  new RuntimeException(String.format(ERRO_AO_PAGAR));
-        }
-    }
-
-    @Override
     public ValoresDTO buscarValoresResponsavel(UUID responsavelId) {
         return parcelaRepository.findValoresByResponsavelId(responsavelId);
     }
 
-    private void atualizarSituacaoDespesa(Parcela parcela) {
-        long countPagas = parcela.getDespesa().getParcelas().stream()
-                .filter(item -> item.getSituacao() == SituacaoEnum.PAGO)
-                .count();
-
-        if (countPagas == parcela.getDespesa().getNumeroParcelas()) {
-            despesaService.pagarDespesa(parcela.getDespesa().getId());
-        }
-    }
 }

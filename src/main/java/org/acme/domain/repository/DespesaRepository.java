@@ -40,14 +40,6 @@ public class DespesaRepository implements PanacheRepository<Despesa> {
             params.put("subgrupo_id", UUID.fromString(despesaFilter.getSubgrupoId()));
         }
 
-        if (despesaFilter.getSituacao() != null) {
-            if (queryBuilder.length() > 0) {
-                queryBuilder.append(" and ");
-            }
-            queryBuilder.append("situacao = :situacao");
-            params.put("situacao", despesaFilter.getSituacao());
-        }
-
         PanacheQuery<Despesa> query;
 
         if (queryBuilder.length() > 0) {

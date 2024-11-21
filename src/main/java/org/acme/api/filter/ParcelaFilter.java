@@ -10,6 +10,4 @@ public class ParcelaFilter {
     private String responsavelId;
     @QueryParam("referenciaCobranca")
     private String referenciaCobranca;
-    @QueryParam("situacao")
-    private SituacaoEnum situacao;
 }

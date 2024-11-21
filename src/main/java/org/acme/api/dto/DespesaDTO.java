@@ -26,8 +26,6 @@ public class DespesaDTO {
     private BigDecimal valorTotal;
     private BigDecimal valorTotalAtivo;
     private String referenciaCobranca;
-    private SituacaoEnum situacao;
-
     private List<ParcelaDTO> parcelas;
 
     public static DespesaDTO entityFromDTO(Despesa despesa){
@@ -41,7 +39,6 @@ public class DespesaDTO {
                 despesa.getValorTotal(),
                 despesa.getValorTotalAtivo(),
                 despesa.getReferenciaCobranca(),
-                despesa.getSituacao(),
                 despesa.getParcelas() != null ? ParcelaDTO.fromEntityList(despesa.getParcelas()) : null
         );
     }

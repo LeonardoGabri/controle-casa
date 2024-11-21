@@ -56,9 +56,6 @@ public class Despesa extends Base {
     @Column(name = "referencia_cobranca")
     private String referenciaCobranca;
 
-    @Enumerated(EnumType.STRING)
-    private SituacaoEnum situacao;
-
     @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonbTransient
     private List<Parcela> parcelas;

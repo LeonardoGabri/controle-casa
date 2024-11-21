@@ -41,14 +41,6 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
             params.put("anoReferencia", ano);
         }
 
-        if (parcelaFilter.getSituacao() != null) {
-            if (queryBuilder.length() > 0) {
-                queryBuilder.append(" and ");
-            }
-            queryBuilder.append("situacao = :situacao");
-            params.put("situacao", parcelaFilter.getSituacao());
-        }
-
         PanacheQuery<Parcela> query;
 
         if (queryBuilder.length() > 0) {

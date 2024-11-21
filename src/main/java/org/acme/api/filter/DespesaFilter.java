@@ -12,6 +12,4 @@ public class DespesaFilter {
     private String contaId;
     @QueryParam("subgrupo")
     private String subgrupoId;
-    @QueryParam("situacao")
-    private SituacaoEnum situacao;
 }
