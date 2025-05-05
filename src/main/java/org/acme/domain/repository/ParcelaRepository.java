@@ -48,7 +48,6 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
             query = findAll();
         }
 
-        query.page(Page.of(page, size));
         return query.list();
     }
 }

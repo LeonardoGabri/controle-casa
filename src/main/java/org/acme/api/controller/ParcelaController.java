@@ -5,6 +5,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.api.dto.ParcelaDTO;
+import org.acme.api.dto.ParcelaValorTotalDTO;
 import org.acme.api.filter.ParcelaFilter;
 import org.acme.api.request.ParcelaRequest;
 import org.acme.domain.model.Parcela;
@@ -30,7 +31,7 @@ private ParcelaService parcelaService;
                                    @QueryParam("page") int page,
                                    @QueryParam("size") int size){
         List<Parcela> parcelas = parcelaService.listar(parcelaFilter, page, size);
-        return Response.status(Response.Status.CREATED).entity(ParcelaDTO.fromEntityList(parcelas)).build();
+        return Response.status(Response.Status.CREATED).entity(ParcelaValorTotalDTO.responseDto(ParcelaDTO.fromEntityList(parcelas))).build();
     }
 
     @GET

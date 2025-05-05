@@ -48,7 +48,6 @@ public class DespesaRepository implements PanacheRepository<Despesa> {
             query = findAll();
         }
 
-        query.page(Page.of(page, size));
         return query.list();
     }
 }

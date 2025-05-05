@@ -32,7 +32,6 @@ public class GrupoRepository implements PanacheRepository<Grupo> {
             query = findAll();
         }
 
-        query.page(Page.of(page, size));
         return query.list();
     }
 

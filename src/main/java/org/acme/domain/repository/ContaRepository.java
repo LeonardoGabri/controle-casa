@@ -51,7 +51,6 @@ public class ContaRepository implements PanacheRepository<Conta> {
             query = findAll();
         }
 
-        query.page(Page.of(page, size));
         return query.list();
     }
 

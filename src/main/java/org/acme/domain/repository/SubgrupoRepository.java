@@ -42,7 +42,6 @@ public class SubgrupoRepository implements PanacheRepository<Subgrupo> {
             query = findAll();
         }
 
-        query.page(Page.of(page, size));
         return query.list();
     }
 

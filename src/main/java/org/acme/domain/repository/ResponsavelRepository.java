@@ -32,7 +32,6 @@ public class ResponsavelRepository implements PanacheRepository<Responsavel> {
             query = findAll();
         }
 
-        query.page(Page.of(page, size));
         return query.list();
     }
 

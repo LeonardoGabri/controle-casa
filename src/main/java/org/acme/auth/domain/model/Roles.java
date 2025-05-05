@@ -1,0 +1,22 @@
+package org.acme.auth.domain.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
+
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Table(name="roles")
+@Data
+public class Roles {
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
+
+    @Column(nullable = false, unique = true)
+    private String nome;
+
+}
