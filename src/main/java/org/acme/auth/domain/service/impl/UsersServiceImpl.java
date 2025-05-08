@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import io.quarkus.elytron.security.common.BcryptUtil;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 @ApplicationScoped
 public class UsersServiceImpl implements UsersService {
@@ -58,5 +59,10 @@ public class UsersServiceImpl implements UsersService {
         }catch (RuntimeException e){
             throw new RuntimeException(String.format(ERRO_AO_DELETAR));
         }
+    }
+
+    @Override
+    public Optional<Users> findByUsername(String username) {
+        return usersRepository.findByUsername(username);
     }
 }
