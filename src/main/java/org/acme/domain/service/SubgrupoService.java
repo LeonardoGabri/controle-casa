@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface SubgrupoService {
     public Subgrupo inserirSubgrupo(SubgrupoRequest subgrupoRequest);
     public Subgrupo atualizarSubgrupo(SubgrupoRequest subgrupoRequest, UUID id);
-    public List<SubgrupoDTO> listarSubgrupoFiltros(SubgrupoFilter subgrupoFilter, int page, int size);
+    public List<Subgrupo> listarSubgrupoFiltros(SubgrupoFilter subgrupoFilter, int page, int size);
     public Subgrupo buscarSubgrupoPorId(UUID id);
     public void deletarSubgrupo(UUID id);
 

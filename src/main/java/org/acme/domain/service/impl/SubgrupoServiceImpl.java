@@ -70,11 +70,8 @@ public class SubgrupoServiceImpl implements SubgrupoService {
     }
 
     @Override
-    public List<SubgrupoDTO> listarSubgrupoFiltros(SubgrupoFilter subgrupoFilter, int page, int size) {
-        List<Subgrupo> subgrupos = subgrupoRepository.paginacaoComFiltros(subgrupoFilter, page, size);
-        return subgrupos.stream()
-                .map(SubgrupoDTO::entityFromDTO)
-                .toList();
+    public List<Subgrupo> listarSubgrupoFiltros(SubgrupoFilter subgrupoFilter, int page, int size) {
+        return subgrupoRepository.paginacaoComFiltros(subgrupoFilter, page, size);
     }
 
     @Override

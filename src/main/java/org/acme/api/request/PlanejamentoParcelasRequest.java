@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Data
 public class PlanejamentoParcelasRequest {
     private String responsavelId;
+    private String despesaId;
     private Double porcentagemDivisao;
-    private BigDecimal valor;
 }
 

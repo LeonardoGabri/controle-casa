@@ -4,22 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.acme.domain.enums.TipoContaEnum;
+import org.acme.domain.model.Despesa;
 import org.acme.domain.model.Responsavel;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class ParcelaDTO {
+@NoArgsConstructor
+public class PlanejamentoParcelasDTO {
     private UUID id;
-    private Responsavel responsavel;
-    private LocalDate dataVencimento;
-    private BigDecimal valor;
-    private String parcelaAtual;
     private Double porcentagemDivisao;
-    private String fornecedor;
+    private String responsavel;
 }

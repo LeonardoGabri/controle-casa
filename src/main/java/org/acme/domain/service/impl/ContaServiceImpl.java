@@ -47,21 +47,26 @@ public class ContaServiceImpl implements ContaService {
 
     @Transactional
     @Override
-    public ContaDTO inserirConta(ContaRequest contaRequest) {
-        Banco banco = bancoService.buscarBancoPorId(UUID.fromString(contaRequest.getBancoId()));
-        Responsavel responsavel = responsavelService.buscarResponsavelPorId(UUID.fromString(contaRequest.getResponsavelId()));
+    public Conta inserirConta(ContaRequest contaRequest) {
+        try{
+            Banco banco = bancoService.buscarBancoPorId(UUID.fromString(contaRequest.getBancoId()));
+            Responsavel responsavel = responsavelService.buscarResponsavelPorId(UUID.fromString(contaRequest.getResponsavelId()));
 
-        Conta conta = Conta.builder()
-                .banco(banco)
-                .responsavel(responsavel)
-                .build();
+            Conta conta = Conta.builder()
+                    .banco(banco)
+                    .responsavel(responsavel)
+                    .tipo(contaRequest.getTipo())
+                    .build();
 
-        contaRepository.persist(conta);
-        return ContaDTO.entityFromDTO(conta);
+            contaRepository.persist(conta);
+            return conta;
+        }catch (Exception e){
+            throw new RuntimeException(String.format(ERRO_AO_SALVAR));
+        }
     }
 
     @Override
-    public ContaDTO atualizarConta(ContaRequest contaRequest, UUID id) {
+    public Conta atualizarConta(ContaRequest contaRequest, UUID id) {
         Conta conta = this.buscarContaPorId(id);
         Banco banco = bancoService.buscarBancoPorId(UUID.fromString(contaRequest.getBancoId()));
         Responsavel responsavel = responsavelService.buscarResponsavelPorId(UUID.fromString(contaRequest.getResponsavelId()));
@@ -69,20 +74,17 @@ public class ContaServiceImpl implements ContaService {
         try {
             conta.setBanco(banco);
             conta.setResponsavel(responsavel);
+            conta.setTipo(contaRequest.getTipo());
             contaRepository.persist(conta);
+            return conta;
         } catch (RuntimeException e) {
             throw new RuntimeException(String.format(ERRO_AO_SALVAR));
         }
-        return ContaDTO.entityFromDTO(conta);
     }
 
     @Override
-    public List<ContaDTO> listarContaFiltros(ContaFilter contaFilter, int page, int size) {
-        List<Conta> contas = contaRepository.paginacaoComFiltros(contaFilter, page, size);
-
-        return contas.stream()
-                .map(ContaDTO::entityFromDTO)
-                .toList();
+    public List<Conta> listarContaFiltros(ContaFilter contaFilter, int page, int size) {
+        return contaRepository.paginacaoComFiltros(contaFilter, page, size);
     }
 
     @Override

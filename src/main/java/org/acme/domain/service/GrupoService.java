@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface GrupoService {
-    public GrupoDTO inserirGrupo(GrupoRequest grupoRequest);
-    public GrupoDTO atualizarGrupo(GrupoRequest grupoRequest, UUID id);
-    public List<GrupoDTO> listarGrupoFiltros(GrupoFilter grupoFilter, int page, int size);
+    public Grupo inserirGrupo(GrupoRequest grupoRequest);
+    public Grupo atualizarGrupo(GrupoRequest grupoRequest, UUID id);
+    public List<Grupo> listarGrupoFiltros(GrupoFilter grupoFilter, int page, int size);
     public Grupo buscarGrupoPorId(UUID id);
     public void deletarGrupo(UUID id);
 

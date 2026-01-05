@@ -12,6 +12,7 @@ import org.acme.api.request.ResponsavelRequest;
 import org.acme.domain.model.Responsavel;
 import org.acme.domain.service.ParcelaService;
 import org.acme.domain.service.ResponsavelService;
+import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,19 +25,19 @@ import java.util.stream.Collectors;
 public class ResponsavelController {
 
     private ResponsavelService responsavelService;
-    private ParcelaService parcelaService;
+    private ModelMapper modelMapper;
 
     @Inject
-    public ResponsavelController(ResponsavelService responsavelService, ParcelaService parcelaService){
+    public ResponsavelController(ResponsavelService responsavelService, ModelMapper modelMapper){
         this.responsavelService = responsavelService;
-        this.parcelaService = parcelaService;
+        this.modelMapper = modelMapper;
     }
 
     @POST
     @Transactional
     public Response inserirResponsavel(ResponsavelRequest responsavelRequest){
         Responsavel responsavel = responsavelService.inserirResponsavel(responsavelRequest);
-        return Response.status(Response.Status.CREATED).entity(ResponsavelDTO.entityFromDTO(responsavel)).build();
+        return Response.status(Response.Status.CREATED).entity(modelMapper.map(responsavel, ResponsavelDTO.class)).build();
     }
 
     @PUT
@@ -44,7 +45,7 @@ public class ResponsavelController {
     @Transactional
     public Response atualizarResponsavel(@PathParam("id") UUID id, ResponsavelRequest responsavelRequest){
         Responsavel responsavel = responsavelService.atualizarResponsavel(responsavelRequest, id);
-        return Response.status(Response.Status.OK).entity(ResponsavelDTO.entityFromDTO(responsavel)).build();
+        return Response.status(Response.Status.OK).entity(modelMapper.map(responsavel, ResponsavelDTO.class)).build();
     }
 
     @DELETE
@@ -59,7 +60,7 @@ public class ResponsavelController {
     @Path("{id}")
     public Response buscarPorId(@PathParam("id") UUID id){
         Responsavel responsavel = responsavelService.buscarResponsavelPorId(id);
-        return Response.status(Response.Status.OK).entity(ResponsavelDTO.entityFromDTO(responsavel)).build();
+        return Response.status(Response.Status.OK).entity(modelMapper.map(responsavel, ResponsavelDTO.class)).build();
     }
 
     @GET
@@ -70,7 +71,7 @@ public class ResponsavelController {
         List<Responsavel> lista = responsavelService.listarResponsavelFiltros(responsavelFilter, page, size);
         List<ResponsavelDTO> dto = new ArrayList<>();
         for (Responsavel responsavel : lista) {
-            ResponsavelDTO responsavelDTO = ResponsavelDTO.entityFromDTO(responsavel);
+            ResponsavelDTO responsavelDTO = modelMapper.map(responsavel, ResponsavelDTO.class);
             dto.add(responsavelDTO);
         }
         return Response.status(Response.Status.OK).entity(dto).build();

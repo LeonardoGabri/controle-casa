@@ -5,35 +5,32 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.acme.domain.enums.TipoContaEnum;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
-@Table(name = "conta")
+@Table(name = "planejamento_parcelas")
 @Data
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
 @DynamicUpdate
-public class Conta extends Base {
+public class PlanejamentoParcelas extends Base  {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "banco_id" )
-    private Banco banco;
+    @JoinColumn(name = "despesa_id")
+    private Despesa despesa;
+
+    @Column(name = "porcentagem_divisao")
+    private Double porcentagemDivisao;
 
     @ManyToOne
-    @JoinColumn(name = "responsavel_id" )
+    @JoinColumn(name = "responsavel_id")
     private Responsavel responsavel;
-
-    @Column(name = "tipo")
-    @Enumerated(EnumType.STRING)
-    private TipoContaEnum tipo;
 }

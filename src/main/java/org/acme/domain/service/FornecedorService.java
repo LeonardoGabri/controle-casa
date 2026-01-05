@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FornecedorService {
-    public FornecedorDTO inserirFornecedor(FornecedorRequest fornecedorRequest);
-    public FornecedorDTO atualizarFornecedor(FornecedorRequest fornecedorRequest, UUID id);
-    public List<FornecedorDTO> listarFornecedorFiltros(FornecedorFilter fornecedorFilter, int page, int size);
+    public Fornecedor inserirFornecedor(FornecedorRequest fornecedorRequest);
+    public Fornecedor atualizarFornecedor(FornecedorRequest fornecedorRequest, UUID id);
+    public List<Fornecedor> listarFornecedorFiltros(FornecedorFilter fornecedorFilter, int page, int size);
     public Fornecedor buscarFornecedorPorId(UUID id);
     public void deletarFornecedor(UUID id);
 

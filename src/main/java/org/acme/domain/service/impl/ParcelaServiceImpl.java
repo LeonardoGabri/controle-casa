@@ -3,18 +3,20 @@ package org.acme.domain.service.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.acme.api.dto.ValoresDTO;
+import org.acme.api.dto.ParcelaDTO;
 import org.acme.api.filter.ParcelaFilter;
+import org.acme.api.request.DespesaRequest;
 import org.acme.api.request.ParcelaRequest;
 import org.acme.api.request.PlanejamentoParcelasRequest;
-import org.acme.domain.enums.SituacaoEnum;
 import org.acme.domain.model.Despesa;
 import org.acme.domain.model.Parcela;
 import org.acme.domain.model.Responsavel;
 import org.acme.domain.repository.ParcelaRepository;
 import org.acme.domain.service.DespesaService;
+import org.acme.domain.service.FornecedorService;
 import org.acme.domain.service.ParcelaService;
 import org.acme.domain.service.ResponsavelService;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,22 +33,27 @@ public class ParcelaServiceImpl implements ParcelaService {
     private final String ERRO_AO_SALVAR = "erro ao salvar registro";
     private final String ERRO_AO_PAGAR = "erro ao pagar registro";
     private final String ERRO_AO_DELETAR = "erro ao deletar registro";
+    private final String ERRO_NO_CALCULO_PORCENTAGEM = "A soma das porcentagens de divisão deve ser exatamente 100.";
     private ParcelaRepository parcelaRepository;
     private ResponsavelService responsavelService;
     private DespesaService despesaService;
+    private FornecedorService fornecedorService;
+    private ModelMapper modelMapper;
 
     @Inject
-    public ParcelaServiceImpl(ParcelaRepository parcelaRepository, ResponsavelService responsavelService, DespesaService despesaService){
+    public ParcelaServiceImpl(ParcelaRepository parcelaRepository, ResponsavelService responsavelService, DespesaService despesaService, FornecedorService fornecedorService, ModelMapper modelMapper) {
         this.parcelaRepository = parcelaRepository;
         this.responsavelService = responsavelService;
         this.despesaService = despesaService;
+        this.fornecedorService = fornecedorService;
+        this.modelMapper = modelMapper;
     }
 
 
     @Override
     @Transactional
     public Parcela inserirParcela(ParcelaRequest parcelaRequest) {
-        try{
+        try {
             Responsavel responsavel = responsavelService.buscarResponsavelPorId(UUID.fromString(parcelaRequest.getResponsavelId()));
             Despesa despesa = despesaService.buscarDespesaPorId(UUID.fromString(parcelaRequest.getDespesaId()));
             Parcela parcela = Parcela.builder()
@@ -59,17 +66,17 @@ public class ParcelaServiceImpl implements ParcelaService {
                     .build();
             parcelaRepository.persist(parcela);
             return parcela;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(String.format(ERRO_AO_SALVAR));
         }
     }
 
     @Override
-    public Parcela atualizarParcela(ParcelaRequest parcelaRequest, UUID id){
+    public Parcela atualizarParcela(ParcelaRequest parcelaRequest, UUID id) {
         Parcela parcela = buscarParcelaPorId(id);
         Responsavel responsavel = responsavelService.buscarResponsavelPorId(UUID.fromString(parcelaRequest.getResponsavelId()));
         Despesa despesa = despesaService.buscarDespesaPorId(UUID.fromString(parcelaRequest.getDespesaId()));
-        try{
+        try {
             parcela.setDataVencimento(parcelaRequest.getDataVencimento());
             parcela.setResponsavel(responsavel);
             parcela.setValor(parcelaRequest.getValor());
@@ -78,7 +85,7 @@ public class ParcelaServiceImpl implements ParcelaService {
             parcela.setDespesa(despesa);
 
             parcelaRepository.persist(parcela);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(String.format(ERRO_AO_SALVAR, parcela));
         }
 
@@ -92,52 +99,76 @@ public class ParcelaServiceImpl implements ParcelaService {
 
     @Override
     public Parcela buscarParcelaPorId(UUID id) {
-        return parcelaRepository.findById(id).orElseThrow(()->new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
+        return parcelaRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
     }
 
-    @Override
-    public List<Parcela> calcularParcelas(Despesa despesa, List<PlanejamentoParcelasRequest> planejamentoParcelasRequests) {
-        List<Parcela> parcelas = new ArrayList<>();
+    public List<ParcelaDTO> calcularParcelas(DespesaRequest despesaRequest) {
+        if (despesaRequest.getPlanejamentoParcelas() == null
+                || despesaRequest.getPlanejamentoParcelas().isEmpty()) {
+            throw new IllegalArgumentException("Planejamento de parcelas é obrigatório");
+        }
 
-        String[] referencia = despesa.getReferenciaCobranca().split("/");
-        int mesInicio = Integer.parseInt(referencia[0]);
-        int anoInicio = Integer.parseInt(referencia[1]);
+        double somaPorcentagem = despesaRequest.getPlanejamentoParcelas()
+                .stream()
+                .mapToDouble(PlanejamentoParcelasRequest::getPorcentagemDivisao)
+                .sum();
 
-        LocalDate dataInicialVencimento = LocalDate.of(anoInicio, mesInicio, 1);
+        if (Double.compare(somaPorcentagem, 100.0) != 0) {
+            throw new IllegalArgumentException("A soma das porcentagens deve ser 100%");
+        }
 
-        planejamentoParcelasRequests.forEach(planejamentoParcelasRequest -> {
-            BigDecimal valorTotal = despesa.getValorTotal();
-            BigDecimal porcentagemDivisao = BigDecimal.valueOf(planejamentoParcelasRequest.getPorcentagemDivisao());
-            BigDecimal valorPlanejamento = valorTotal.multiply(porcentagemDivisao.divide(BigDecimal.valueOf(100), 2, BigDecimal.ROUND_HALF_UP));
+        List<ParcelaDTO> parcelas = new ArrayList<>();
 
-            BigDecimal valorBaseParcela = valorPlanejamento.divide(BigDecimal.valueOf(despesa.getNumeroParcelas()), 2, BigDecimal.ROUND_DOWN);
-            BigDecimal somaParcelas = BigDecimal.ZERO;
+        BigDecimal valorTotal = despesaRequest.getValorTotal();
+        int numeroParcelas = despesaRequest.getNumeroParcelas();
 
-            for (int i = 0; i < despesa.getNumeroParcelas(); i++) {
-                LocalDate dataVencimentoParcela = dataInicialVencimento.plusMonths(i);
-                String parcelaAtual = (i + 1) + "/" + despesa.getNumeroParcelas();
+        BigDecimal valorParcelaBase =
+                valorTotal
+                        .divide(BigDecimal.valueOf(numeroParcelas), 4)
+                        .setScale(2);
 
-                BigDecimal valorParcela = valorBaseParcela;
+        for (int i = 1; i <= numeroParcelas; i++) {
 
-                if (i == despesa.getNumeroParcelas() - 1) {
-                    valorParcela = valorPlanejamento.subtract(somaParcelas);
-                } else {
-                    somaParcelas = somaParcelas.add(valorBaseParcela);
-                }
+            LocalDate vencimento = despesaRequest.getDataLancamento().plusMonths(i - 1);
 
-                ParcelaRequest parcelaCalculada = ParcelaRequest.builder()
-                        .valor(valorParcela)
-                        .dataVencimento(dataVencimentoParcela)
-                        .despesaId(despesa.getId().toString())
-                        .porcentagemDivisao(planejamentoParcelasRequest.getPorcentagemDivisao())
-                        .responsavelId(planejamentoParcelasRequest.getResponsavelId())
-                        .parcelaAtual(parcelaAtual)
-                        .build();
+            for (PlanejamentoParcelasRequest planejamento : despesaRequest.getPlanejamentoParcelas()) {
 
-                parcelas.add(inserirParcela(parcelaCalculada));
+                BigDecimal percentual =
+                        BigDecimal.valueOf(planejamento.getPorcentagemDivisao())
+                                .divide(BigDecimal.valueOf(100), 4);
+                BigDecimal valorResponsavel =
+                        valorParcelaBase
+                                .multiply(percentual)
+                                .setScale(2);
+                parcelas.add(
+                        ParcelaDTO.builder()
+                                .dataVencimento(vencimento)
+                                .responsavel(responsavelService.buscarResponsavelPorId(UUID.fromString(planejamento.getResponsavelId())))
+                                .porcentagemDivisao(planejamento.getPorcentagemDivisao())
+                                .parcelaAtual(String.valueOf(i))
+                                .valor(valorResponsavel)
+                                .fornecedor(fornecedorService.buscarFornecedorPorId(UUID.fromString(despesaRequest.getFornecedorId())).getNome())
+                                .build()
+                );
             }
-        });
+        }
 
         return parcelas;
+    }
+
+    public void validarPorcentagemPlanejamento(List<PlanejamentoParcelasRequest> planejamentoParcelasRequests) {
+
+        if (planejamentoParcelasRequests == null || planejamentoParcelasRequests.isEmpty()) {
+            throw new IllegalArgumentException("Planejamento de parcelas é obrigatório");
+        }
+
+        BigDecimal somaPorcentagem = planejamentoParcelasRequests.stream()
+                .map(PlanejamentoParcelasRequest::getPorcentagemDivisao)
+                .map(BigDecimal::valueOf)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (somaPorcentagem.compareTo(BigDecimal.valueOf(100)) != 0) {
+            throw new IllegalArgumentException(ERRO_NO_CALCULO_PORCENTAGEM);
+        }
     }
 }

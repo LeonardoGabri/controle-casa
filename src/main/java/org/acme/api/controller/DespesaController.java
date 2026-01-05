@@ -9,6 +9,7 @@ import org.acme.api.filter.DespesaFilter;
 import org.acme.api.request.DespesaRequest;
 import org.acme.domain.model.Despesa;
 import org.acme.domain.service.DespesaService;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 public class DespesaController {
 
     private DespesaService despesaService;
+    private ModelMapper modelMapper;
 
-    public DespesaController(DespesaService despesaService){
+    public DespesaController(DespesaService despesaService, ModelMapper modelMapper){
         this.despesaService = despesaService;
+        this.modelMapper = modelMapper;
     }
 
     @POST
@@ -30,7 +33,7 @@ public class DespesaController {
     public Response inserirDespesa(DespesaRequest despesaRequest){
         validarReferenciaCobranca(despesaRequest.getReferenciaCobranca());
         Despesa despesa = despesaService.inserirDespesa(despesaRequest);
-        return Response.status(Response.Status.CREATED).entity(DespesaDTO.entityFromDTO(despesa)).build();
+        return Response.status(Response.Status.CREATED).entity(modelMapper.map(despesa, DespesaDTO.class)).build();
     }
 
     @PUT
@@ -38,7 +41,7 @@ public class DespesaController {
     @Transactional
     public Response atualizarDespesa(@PathParam("id") UUID id, DespesaRequest despesaRequest){
         Despesa despesa = despesaService.atualizarDespesa(despesaRequest, id);
-        return Response.status(Response.Status.OK).entity(DespesaDTO.entityFromDTO(despesa)).build();
+        return Response.status(Response.Status.OK).entity(modelMapper.map(despesa, DespesaDTO.class)).build();
     }
 
     @GET
@@ -46,7 +49,7 @@ public class DespesaController {
     @Transactional
     public Response buscarPorId(@PathParam("id") String id){
         Despesa despesa = despesaService.buscarDespesaPorId(UUID.fromString(id));
-        return Response.status(Response.Status.OK).entity(DespesaDTO.entityFromDTO(despesa)).build();
+        return Response.status(Response.Status.OK).entity(modelMapper.map(despesa, DespesaDTO.class)).build();
     }
 
     @GET
@@ -56,7 +59,7 @@ public class DespesaController {
                                      @QueryParam("page") int page,
                                      @QueryParam("size") int size){
         List<Despesa> despesas = despesaService.listar(despesaFilter, page, size);
-        List<DespesaDTO> despesasDTO = despesas.stream().map(DespesaDTO::entityFromDTO).collect(Collectors.toList());
+        List<DespesaDTO> despesasDTO = despesas.stream().map(item -> modelMapper.map(item, DespesaDTO.class)).collect(Collectors.toList());
         return Response.status(Response.Status.OK).entity(despesasDTO).build();
     }
 

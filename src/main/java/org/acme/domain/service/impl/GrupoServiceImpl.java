@@ -30,14 +30,18 @@ public class GrupoServiceImpl implements GrupoService {
 
     @Transactional
     @Override
-    public GrupoDTO inserirGrupo(GrupoRequest grupoRequest) {
-        validaNomeGrupo(grupoRequest, null);
-        Grupo grupo = Grupo.builder()
-                .nome(grupoRequest.getNome())
-                .build();
+    public Grupo inserirGrupo(GrupoRequest grupoRequest) {
+        try{
+            validaNomeGrupo(grupoRequest, null);
+            Grupo grupo = Grupo.builder()
+                    .nome(grupoRequest.getNome())
+                    .build();
 
-        grupoRepository.persist(grupo);
-        return GrupoDTO.entityFromDTO(grupo);
+            grupoRepository.persist(grupo);
+            return grupo;
+        }catch (Exception e){
+            throw new RuntimeException(String.format(ERRO_AO_SALVAR));
+        }
     }
 
     private void validaNomeGrupo(GrupoRequest grupoRequest, UUID grupoId) {
@@ -50,31 +54,26 @@ public class GrupoServiceImpl implements GrupoService {
     }
 
     @Override
-    public GrupoDTO atualizarGrupo(GrupoRequest grupoRequest, UUID id) {
+    public Grupo atualizarGrupo(GrupoRequest grupoRequest, UUID id) {
         Grupo grupo = this.buscarGrupoPorId(id);
         validaNomeGrupo(grupoRequest, id);
         try{
             grupo.setNome(grupoRequest.getNome());
             grupoRepository.persist(grupo);
+            return grupo;
         }catch (RuntimeException e){
             throw new RuntimeException(String.format(ERRO_AO_SALVAR));
         }
-        return GrupoDTO.entityFromDTO(grupo);
     }
 
     @Override
-    public List<GrupoDTO> listarGrupoFiltros(GrupoFilter grupoFilter, int page, int size) {
-        List<Grupo> grupos = grupoRepository.paginacaoComFiltros(grupoFilter,page, size);
-
-        return grupos.stream()
-                .map(GrupoDTO::entityFromDTO)
-                .toList();
+    public List<Grupo> listarGrupoFiltros(GrupoFilter grupoFilter, int page, int size) {
+        return grupoRepository.paginacaoComFiltros(grupoFilter,page, size);
     }
 
     @Override
     public Grupo buscarGrupoPorId(UUID id) {
-        Grupo grupo = grupoRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
-        return grupo;
+        return grupoRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
     }
 
     @Override
