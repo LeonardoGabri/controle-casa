@@ -40,6 +40,9 @@ public class Despesa extends Base {
     @Column(name = "data_lancamento")
     private LocalDate dataLancamento;
 
+    @Column(name = "descricao")
+    private String descricao;
+
     @ManyToOne
     @JoinColumn(name = "subgrupo_id")
     private Subgrupo subgrupo;
@@ -55,6 +58,10 @@ public class Despesa extends Base {
 
     @Column(name = "referencia_cobranca")
     private String referenciaCobranca;
+
+    @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonbTransient
+    private List<PlanejamentoParcelas> planejamentoParcelas;
 
     @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonbTransient

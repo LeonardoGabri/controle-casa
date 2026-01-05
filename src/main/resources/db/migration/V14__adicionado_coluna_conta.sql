@@ -1,0 +1,9 @@
+ALTER TABLE conta
+    ADD COLUMN tipo VARCHAR(20)
+        CHECK (tipo IN ('CONTA_CORRENTE', 'CREDITO', 'INVESTIMENTO'));
+
+UPDATE conta
+SET tipo = 'CREDITO';
+
+UPDATE conta
+SET tipo = 'CREDITO';

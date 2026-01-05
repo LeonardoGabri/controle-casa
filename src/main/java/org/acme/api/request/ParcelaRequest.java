@@ -19,6 +19,5 @@ public class ParcelaRequest {
     private BigDecimal valor;
     private Double porcentagemDivisao;
     private String despesaId;
-
     private String parcelaAtual;
 }

@@ -13,6 +13,7 @@ import java.util.List;
 public class DespesaRequest {
     private String contaId;
     private String fornecedorId;
+    private String descricao;
     private String subgrupoId;
     private LocalDate dataLancamento;
     @ReferenciaCobranca
@@ -20,4 +21,5 @@ public class DespesaRequest {
     private Integer numeroParcelas;
     private BigDecimal valorTotal;
     List<PlanejamentoParcelasRequest> planejamentoParcelas;
+    List<ParcelaRequest> parcelas;
 }

@@ -8,10 +8,13 @@ import jakarta.ws.rs.core.Response;
 import org.acme.api.dto.GrupoDTO;
 import org.acme.api.filter.GrupoFilter;
 import org.acme.api.request.GrupoRequest;
+import org.acme.domain.model.Grupo;
 import org.acme.domain.service.GrupoService;
+import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Path("/grupo")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -19,25 +22,27 @@ import java.util.UUID;
 public class GrupoController {
 
     private GrupoService grupoService;
+    private ModelMapper modelMapper;
 
     @Inject
-    public GrupoController(GrupoService grupoService){
+    public GrupoController(GrupoService grupoService, ModelMapper modelMapper){
         this.grupoService = grupoService;
+        this.modelMapper = modelMapper;
     }
 
     @POST
     @Transactional
     public Response inserirResponsavel(GrupoRequest grupoRequest){
-        GrupoDTO grupoDTO = grupoService.inserirGrupo(grupoRequest);
-        return Response.status(Response.Status.CREATED).entity(grupoDTO).build();
+        Grupo grupo = grupoService.inserirGrupo(grupoRequest);
+        return Response.status(Response.Status.CREATED).entity(modelMapper.map(grupo, Grupo.class)).build();
     }
 
     @PUT
     @Path("{id}")
     @Transactional
     public Response atualizarResponsavel(@PathParam("id") UUID id, GrupoRequest grupoRequest){
-        GrupoDTO grupoDTO = grupoService.atualizarGrupo(grupoRequest, id);
-        return Response.status(Response.Status.OK).entity(grupoDTO).build();
+        Grupo grupo = grupoService.atualizarGrupo(grupoRequest, id);
+        return Response.status(Response.Status.OK).entity(modelMapper.map(grupo, Grupo.class)).build();
     }
 
     @DELETE
@@ -59,8 +64,7 @@ public class GrupoController {
     public Response buscarComFiltros(@BeanParam GrupoFilter grupoFilter,
                                      @QueryParam("page") int page,
                                      @QueryParam("size") int size){
-        List<GrupoDTO> lista = grupoService.listarGrupoFiltros(grupoFilter, page, size);
-        return Response.status(Response.Status.OK).entity(lista).build();
+        List<Grupo> lista = grupoService.listarGrupoFiltros(grupoFilter, page, size);
+        return Response.status(Response.Status.OK).entity(lista.stream().map(item -> modelMapper.map(item, Grupo.class)).collect(Collectors.toList())).build();
     }
-
 }

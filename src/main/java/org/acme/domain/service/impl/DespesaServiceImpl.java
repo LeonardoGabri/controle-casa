@@ -5,13 +5,18 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.acme.api.filter.DespesaFilter;
 import org.acme.api.request.DespesaRequest;
-import org.acme.domain.enums.SituacaoEnum;
+import org.acme.api.request.ParcelaRequest;
+import org.acme.api.request.PlanejamentoParcelasRequest;
 import org.acme.domain.model.*;
 import org.acme.domain.repository.DespesaRepository;
 import org.acme.domain.service.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @ApplicationScoped
@@ -28,6 +33,8 @@ public class DespesaServiceImpl implements DespesaService {
     private FornecedorService fornecedorService;
     private SubgrupoService subgrupoService;
     private ContaService contaService;
+    private PlanejamentoParcelasService planejamentoParcelasService;
+
 
 
 
@@ -37,48 +44,103 @@ public class DespesaServiceImpl implements DespesaService {
             ParcelaService parcelaService,
             ContaService contaService,
             FornecedorService fornecedorService,
-            SubgrupoService subgrupoService
+            SubgrupoService subgrupoService,
+            PlanejamentoParcelasService planejamentoParcelasService
     ){
         this.despesaRespository = despesaRespository;
         this.parcelaService = parcelaService;
         this.contaService = contaService;
         this.fornecedorService = fornecedorService;
         this.subgrupoService = subgrupoService;
+        this.planejamentoParcelasService = planejamentoParcelasService;
     }
 
 
     @Override
     @Transactional
     public Despesa inserirDespesa(DespesaRequest despesaRequest) {
+
         Conta conta = contaService.buscarContaPorId(UUID.fromString(despesaRequest.getContaId()));
         Fornecedor fornecedor = fornecedorService.buscarFornecedorPorId(UUID.fromString(despesaRequest.getFornecedorId()));
-        Subgrupo subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(despesaRequest.getSubgrupoId()));
 
-        double somaPorcentagem = despesaRequest.getPlanejamentoParcelas().stream()
-                .mapToDouble(item -> item.getPorcentagemDivisao())
-                .sum();
-
-        if (somaPorcentagem != 100.0) {
-            throw new IllegalArgumentException(String.format(ERRO_NO_CALCULO_PORCENTAGEM));
+        Subgrupo subgrupo = null;
+        if (despesaRequest.getSubgrupoId() != null) {
+            subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(despesaRequest.getSubgrupoId()));
         }
+
+        parcelaService.validarPorcentagemPlanejamento(despesaRequest.getPlanejamentoParcelas());
 
         Despesa despesa = Despesa.builder()
                 .conta(conta)
                 .fornecedor(fornecedor)
                 .subgrupo(subgrupo)
+                .descricao(despesaRequest.getDescricao())
                 .dataLancamento(despesaRequest.getDataLancamento())
                 .referenciaCobranca(despesaRequest.getReferenciaCobranca())
                 .numeroParcelas(despesaRequest.getNumeroParcelas())
                 .valorTotal(despesaRequest.getValorTotal())
                 .valorTotalAtivo(despesaRequest.getValorTotal())
                 .build();
+
+        despesa.setPlanejamentoParcelas(
+                getPlanejamentoParcelas(despesaRequest.getPlanejamentoParcelas(), despesa)
+        );
+
+        despesa.setParcelas(
+                getParcelas(despesaRequest.getParcelas(), despesa)
+        );
+
         despesaRespository.persist(despesa);
 
-        List<Parcela> parcelasCalculadas = this.parcelaService.calcularParcelas(despesa, despesaRequest.getPlanejamentoParcelas());
-        despesa.setParcelas(parcelasCalculadas);
         return despesa;
     }
 
+    private List<PlanejamentoParcelas> getPlanejamentoParcelas(
+            List<PlanejamentoParcelasRequest> planejamentoParcelasRequests,
+            Despesa despesa
+    ) {
+        return planejamentoParcelasRequests.stream()
+                .map(item -> {
+
+                    if (item.getPorcentagemDivisao() == null) {
+                        throw new IllegalArgumentException(
+                                "Porcentagem de divisão é obrigatória no planejamento de parcelas"
+                        );
+                    }
+
+                    PlanejamentoParcelas pp = PlanejamentoParcelas.builder()
+                            .porcentagemDivisao(item.getPorcentagemDivisao())
+                            .responsavel(
+                                    Responsavel.builder()
+                                            .id(UUID.fromString(item.getResponsavelId()))
+                                            .build()
+                            )
+                            .despesa(despesa)
+                            .build();
+
+                    return pp;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<Parcela> getParcelas(List<ParcelaRequest> parcelasRequest, Despesa despesa) {
+        return parcelasRequest
+                .stream()
+                .map(item -> Parcela.builder()
+                        .despesa(despesa)
+                        .responsavel(
+                                Responsavel.builder()
+                                        .id(UUID.fromString(item.getResponsavelId()))
+                                        .build()
+                        )
+                        .dataVencimento(item.getDataVencimento())
+                        .valor(item.getValor())
+                        .porcentagemDivisao(item.getPorcentagemDivisao())
+                        .parcelaAtual(item.getParcelaAtual())
+                        .build()
+                )
+                .toList();
+    }
 
     @Override
     public Despesa atualizarDespesa(DespesaRequest despesaRequest, UUID id) {
@@ -95,6 +157,7 @@ public class DespesaServiceImpl implements DespesaService {
                 despesa.setConta(conta);
                 despesa.setFornecedor(fornecedor);
                 despesa.setSubgrupo(subgrupo);
+                despesa.setDescricao(despesaRequest.getDescricao());
                 despesa.setDataLancamento(despesaRequest.getDataLancamento());
                 despesa.setReferenciaCobranca(despesaRequest.getReferenciaCobranca());
                 despesa.setNumeroParcelas(despesaRequest.getNumeroParcelas());

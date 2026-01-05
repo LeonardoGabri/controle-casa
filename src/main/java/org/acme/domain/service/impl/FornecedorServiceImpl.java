@@ -3,16 +3,13 @@ package org.acme.domain.service.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import org.acme.api.dto.ContaDTO;
-import org.acme.api.dto.FornecedorDTO;
-import org.acme.api.filter.ContaFilter;
 import org.acme.api.filter.FornecedorFilter;
-import org.acme.api.request.ContaRequest;
 import org.acme.api.request.FornecedorRequest;
-import org.acme.domain.model.*;
-import org.acme.domain.repository.ContaRepository;
+import org.acme.domain.model.Fornecedor;
+import org.acme.domain.model.Subgrupo;
 import org.acme.domain.repository.FornecedorRepository;
-import org.acme.domain.service.*;
+import org.acme.domain.service.FornecedorService;
+import org.acme.domain.service.SubgrupoService;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
@@ -29,32 +26,33 @@ public class FornecedorServiceImpl implements FornecedorService {
     private FornecedorRepository fornecedorRepository;
     private SubgrupoService subgrupoService;
 
-    private ModelMapper modelMapper;
-
     @Inject
-    public FornecedorServiceImpl(FornecedorRepository fornecedorRepository, SubgrupoService subgrupoService, ModelMapper modelMapper) {
+    public FornecedorServiceImpl(FornecedorRepository fornecedorRepository, SubgrupoService subgrupoService) {
         this.fornecedorRepository = fornecedorRepository;
         this.subgrupoService = subgrupoService;
-        this.modelMapper = modelMapper;
     }
 
     @Transactional
     @Override
-    public FornecedorDTO inserirFornecedor(FornecedorRequest fornecedorRequest) {
-        validaNomeFornecedor(fornecedorRequest, null);
+    public Fornecedor inserirFornecedor(FornecedorRequest fornecedorRequest) {
+        try{
+            validaNomeFornecedor(fornecedorRequest, null);
 
-        Subgrupo subgrupo = null;
-        if (fornecedorRequest.getSubgrupoId() != null) {
-            subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(fornecedorRequest.getSubgrupoId()));
+            Subgrupo subgrupo = null;
+            if (fornecedorRequest.getSubgrupoId() != null) {
+                subgrupo = subgrupoService.buscarSubgrupoPorId(UUID.fromString(fornecedorRequest.getSubgrupoId()));
+            }
+
+            Fornecedor fornecedor = Fornecedor.builder()
+                    .nome(fornecedorRequest.getNome())
+                    .subgrupo(subgrupo)
+                    .build();
+
+            fornecedorRepository.persist(fornecedor);
+            return fornecedor;
+        }catch (Exception e){
+            throw new RuntimeException(String.format(ERRO_AO_SALVAR));
         }
-
-        Fornecedor fornecedor = Fornecedor.builder()
-                .nome(fornecedorRequest.getNome())
-                .subgrupo(subgrupo)
-                .build();
-
-        fornecedorRepository.persist(fornecedor);
-        return FornecedorDTO.entityFromDTO(fornecedor);
     }
 
     private void validaNomeFornecedor(FornecedorRequest fornecedorRequest, UUID fornecedorId) {
@@ -67,7 +65,7 @@ public class FornecedorServiceImpl implements FornecedorService {
     }
 
     @Override
-    public FornecedorDTO atualizarFornecedor(FornecedorRequest fornecedorRequest, UUID id) {
+    public Fornecedor atualizarFornecedor(FornecedorRequest fornecedorRequest, UUID id) {
         Fornecedor fornecedor = this.buscarFornecedorPorId(id);
         validaNomeFornecedor(fornecedorRequest, id);
 
@@ -80,25 +78,20 @@ public class FornecedorServiceImpl implements FornecedorService {
             fornecedor.setNome(fornecedorRequest.getNome());
             fornecedor.setSubgrupo(subgrupo);
             fornecedorRepository.persist(fornecedor);
+            return fornecedor;
         } catch (RuntimeException e) {
             throw new RuntimeException(String.format(ERRO_AO_SALVAR));
         }
-        return FornecedorDTO.entityFromDTO(fornecedor);
     }
 
     @Override
-    public List<FornecedorDTO> listarFornecedorFiltros(FornecedorFilter fornecedorFilter, int page, int size) {
-        List<Fornecedor> fornecedores = fornecedorRepository.paginacaoComFiltros(fornecedorFilter, page, size);
-
-        return fornecedores.stream()
-                .map(FornecedorDTO::entityFromDTO)
-                .toList();
+    public List<Fornecedor> listarFornecedorFiltros(FornecedorFilter fornecedorFilter, int page, int size) {
+        return fornecedorRepository.paginacaoComFiltros(fornecedorFilter, page, size);
     }
 
     @Override
     public Fornecedor buscarFornecedorPorId(UUID id) {
-        Fornecedor fornecedor = fornecedorRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
-        return fornecedor;
+        return fornecedorRepository.findById(id).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, id)));
     }
 
     @Override
