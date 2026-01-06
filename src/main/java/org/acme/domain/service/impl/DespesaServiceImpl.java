@@ -7,6 +7,7 @@ import org.acme.api.filter.DespesaFilter;
 import org.acme.api.request.DespesaRequest;
 import org.acme.api.request.ParcelaRequest;
 import org.acme.api.request.PlanejamentoParcelasRequest;
+import org.acme.api.request.ResponsavelRequest;
 import org.acme.domain.model.*;
 import org.acme.domain.repository.DespesaRepository;
 import org.acme.domain.service.*;
@@ -27,7 +28,7 @@ public class DespesaServiceImpl implements DespesaService {
     private final String ERRO_AO_SALVAR = "erro ao salvar registro";
     private final String ERRO_AO_PAGAR = "erro ao pagar despesa";
     private final String ERRO_AO_DELETAR = "erro ao deletar registro";
-    private final String ERRO_NO_CALCULO_PORCENTAGEM = "A soma das porcentagens de divisão deve ser exatamente 100.";
+    private final String ERRO_PORCENTAGEM_DIVISAO = "Porcentagem de divisão é obrigatória no planejamento de parcelas";
     private DespesaRepository despesaRespository;
     private ParcelaService parcelaService;
     private FornecedorService fornecedorService;
@@ -104,7 +105,7 @@ public class DespesaServiceImpl implements DespesaService {
 
                     if (item.getPorcentagemDivisao() == null) {
                         throw new IllegalArgumentException(
-                                "Porcentagem de divisão é obrigatória no planejamento de parcelas"
+                                ERRO_PORCENTAGEM_DIVISAO
                         );
                     }
 

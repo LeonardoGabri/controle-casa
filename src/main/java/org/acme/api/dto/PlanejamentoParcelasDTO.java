@@ -17,5 +17,6 @@ import java.util.UUID;
 public class PlanejamentoParcelasDTO {
     private UUID id;
     private Double porcentagemDivisao;
-    private String responsavel;
+    private String responsavelId;
+    private String responsavelNome;
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.acme.domain.model.Conta;
 import org.acme.domain.model.Responsavel;
 
 import java.math.BigDecimal;
@@ -16,10 +17,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ParcelaDTO {
     private UUID id;
-    private Responsavel responsavel;
+    private String responsavelId;
+    private String responsavelNome;
     private LocalDate dataVencimento;
     private BigDecimal valor;
     private String parcelaAtual;
+    private Integer totalParcelas;
     private Double porcentagemDivisao;
-    private String fornecedor;
+    private String fornecedorId;
+    private String fornecedorNome;
+    private String despesaId;
+    private Conta conta;
 }

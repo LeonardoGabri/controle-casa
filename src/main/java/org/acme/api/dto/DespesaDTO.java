@@ -20,14 +20,16 @@ public class DespesaDTO {
 
     private UUID id;
     private Conta conta;
-    private String fornecedor;
-    private Subgrupo subgrupo;
+    private String fornecedorId;
+    private String fornecedorNome;
+    private String subgrupoId;
+    private String subgrupoNome;
     private String descricao;
     private LocalDate dataLancamento;
     private Integer numeroParcelas;
     private BigDecimal valorTotal;
     private BigDecimal valorTotalAtivo;
     private String referenciaCobranca;
-    private List<PlanejamentoParcelas> planejamentoParcelas;
-    private List<Parcela> parcelas;
+    private List<PlanejamentoParcelasDTO> planejamentoParcelas;
+    private List<ParcelaDTO> parcelas;
 }

@@ -37,7 +37,7 @@ public class ParcelaController {
                                      @QueryParam("page") int page,
                                      @QueryParam("size") int size) {
         List<Parcela> parcelas = parcelaService.listar(parcelaFilter, page, size);
-        return Response.status(Response.Status.CREATED).entity(parcelas.stream().map(item -> modelMapper.map(item, ParcelaDTO.class)).collect(Collectors.toList())).build();
+        return Response.status(Response.Status.CREATED).entity(ParcelaValorTotalDTO.responseDto(parcelas.stream().map(item -> modelMapper.map(item, ParcelaDTO.class)).collect(Collectors.toList()))).build();
     }
 
     @GET

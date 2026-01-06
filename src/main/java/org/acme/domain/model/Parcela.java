@@ -1,11 +1,9 @@
 package org.acme.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.acme.domain.enums.SituacaoEnum;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
@@ -45,5 +43,6 @@ public class Parcela extends PanacheEntityBase {
 
     @ManyToOne
     @JoinColumn(name = "despesa_id")
+    @JsonBackReference
     private Despesa despesa;
 }

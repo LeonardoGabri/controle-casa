@@ -40,6 +40,14 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
             params.put("anoReferencia", ano);
         }
 
+        if (parcelaFilter.getContaId() != null && !parcelaFilter.getContaId().isEmpty()) {
+            if (queryBuilder.length() > 0) {
+                queryBuilder.append(" and ");
+            }
+            queryBuilder.append("despesa.conta.id = :conta_id");
+            params.put("conta_id", UUID.fromString(parcelaFilter.getContaId()));
+        }
+
         PanacheQuery<Parcela> query;
 
         if (queryBuilder.length() > 0) {

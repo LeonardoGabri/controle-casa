@@ -34,7 +34,7 @@ public class ContaController {
     @Transactional
     public Response inserirConta(ContaRequest contaRequest) {
         Conta conta = contaService.inserirConta(contaRequest);
-        return Response.status(Response.Status.CREATED).entity(modelMapper.createTypeMap(conta, ContaDTO.class)).build();
+        return Response.status(Response.Status.CREATED).entity(modelMapper.map(conta, ContaDTO.class)).build();
     }
 
     @PUT

@@ -1,5 +1,6 @@
 package org.acme.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -65,5 +66,6 @@ public class Despesa extends Base {
 
     @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonbTransient
+    @JsonManagedReference
     private List<Parcela> parcelas;
 }

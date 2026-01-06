@@ -10,4 +10,6 @@ public class ParcelaFilter {
     private String responsavelId;
     @QueryParam("referenciaCobranca")
     private String referenciaCobranca;
+    @QueryParam("contaId")
+    private String contaId;
 }

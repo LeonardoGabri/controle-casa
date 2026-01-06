@@ -1,10 +1,15 @@
 package org.acme.api.modelMapper;
 
+import jakarta.inject.Inject;
 import org.acme.api.dto.DespesaDTO;
 import org.acme.api.dto.ParcelaDTO;
+import org.acme.api.dto.PlanejamentoParcelasDTO;
 import org.acme.domain.model.Despesa;
 import org.acme.domain.model.Parcela;
+import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+
+import java.util.UUID;
 
 public class DespesaToDespesaDTO extends PropertyMap<Despesa, DespesaDTO> {
     @Override
@@ -12,14 +17,13 @@ public class DespesaToDespesaDTO extends PropertyMap<Despesa, DespesaDTO> {
         map().setId(source.getId());
 
         map().setConta(source.getConta());
-        map().setFornecedor(source.getFornecedor().getNome());
-        map().setSubgrupo(source.getSubgrupo());
+        map().setFornecedorId(String.valueOf(source.getFornecedor().getId()));
+        map().setSubgrupoId(String.valueOf(source.getSubgrupo().getId()));
         map().setDescricao(source.getDescricao());
         map().setDataLancamento(source.getDataLancamento());
         map().setNumeroParcelas(source.getNumeroParcelas());
         map().setValorTotal(source.getValorTotal());
         map().setValorTotalAtivo(source.getValorTotalAtivo());
         map().setReferenciaCobranca(source.getReferenciaCobranca());
-        map().setPlanejamentoParcelas(source.getPlanejamentoParcelas());
     }
 }

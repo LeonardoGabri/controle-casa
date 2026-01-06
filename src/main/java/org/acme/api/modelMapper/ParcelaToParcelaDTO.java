@@ -10,10 +10,14 @@ public class ParcelaToParcelaDTO extends PropertyMap<Parcela, ParcelaDTO> {
     @Override
     protected void configure() {
         map().setId(source.getId());
-        map().setResponsavel(source.getResponsavel());
+        map().setResponsavelId(String.valueOf(source.getResponsavel().getId()));
         map().setDataVencimento(source.getDataVencimento());
-        map().setFornecedor(source.getDespesa().getFornecedor().getNome());
+        map().setFornecedorId(String.valueOf(source.getDespesa().getFornecedor().getId()));
+        map().setFornecedorNome(String.valueOf(source.getDespesa().getFornecedor().getNome()));
         map().setParcelaAtual(source.getParcelaAtual());
+        map().setDespesaId(String.valueOf(source.getDespesa().getId()));
         map().setPorcentagemDivisao(source.getPorcentagemDivisao());
+        map().setConta(source.getDespesa().getConta());
+        map().setTotalParcelas(source.getDespesa().getNumeroParcelas());
     }
 }
