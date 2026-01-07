@@ -59,12 +59,12 @@ public class ContaController {
         return Response.status(Response.Status.OK).entity(contaService.buscarContaPorId(id)).build();
     }
 
-    @GET
-    @Path("/filtros")
-    public Response buscarComFiltros(@BeanParam ContaFilter contaFilter,
-                                     @QueryParam("page") int page,
-                                     @QueryParam("size") int size) {
-        List<Conta> lista = contaService.listarContaFiltros(contaFilter, page, size);
-        return Response.status(Response.Status.OK).entity(lista.stream().map(item -> modelMapper.map(item, ContaDTO.class)).collect(Collectors.toList())).build();
-    }
+        @GET
+        @Path("/filtros")
+        public Response buscarComFiltros(@BeanParam ContaFilter contaFilter,
+                                         @QueryParam("page") int page,
+                                         @QueryParam("size") int size) {
+            List<Conta> lista = contaService.listarContaFiltros(contaFilter, page, size);
+            return Response.status(Response.Status.OK).entity(lista.stream().map(item -> modelMapper.map(item, ContaDTO.class)).collect(Collectors.toList())).build();
+        }
 }

@@ -12,4 +12,9 @@ public class ParcelaFilter {
     private String referenciaCobranca;
     @QueryParam("contaId")
     private String contaId;
+
+    @QueryParam("dataIni")
+    private String dataIni;
+    @QueryParam("dataFim")
+    private String dataFim;
 }

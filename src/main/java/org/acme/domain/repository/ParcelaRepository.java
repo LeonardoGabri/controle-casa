@@ -12,6 +12,9 @@ import org.acme.domain.enums.SituacaoEnum;
 import org.acme.domain.model.Parcela;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @ApplicationScoped
@@ -30,7 +33,7 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
         }
 
         if (parcelaFilter.getReferenciaCobranca() != null && !parcelaFilter.getReferenciaCobranca().isEmpty()) {
-            String[] mesAno = parcelaFilter.getReferenciaCobranca().split("/");
+            String[] mesAno = getMesAno(parcelaFilter);
             int mes = Integer.parseInt(mesAno[0]);
             int ano = Integer.parseInt(mesAno[1]);
 
@@ -50,35 +53,87 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
             params.put("conta_id", UUID.fromString(parcelaFilter.getContaId()));
         }
 
+        if (parcelaFilter.getDataIni() != null || parcelaFilter.getDataFim() != null) {
+
+            if (queryBuilder.length() > 0) {
+                queryBuilder.append(" and ");
+            }
+
+            if (parcelaFilter.getDataIni() != null && parcelaFilter.getDataFim() != null) {
+
+                LocalDate dataIni = inicioMes(parcelaFilter.getDataIni());
+                LocalDate dataFim = fimMes(parcelaFilter.getDataFim());
+
+                queryBuilder.append("dataVencimento between :dataIni and :dataFim");
+                params.put("dataIni", dataIni);
+                params.put("dataFim", dataFim);
+
+            } else if (parcelaFilter.getDataIni() != null) {
+
+                LocalDate dataIni = inicioMes(parcelaFilter.getDataIni());
+
+                queryBuilder.append("dataVencimento >= :dataIni");
+                params.put("dataIni", dataIni);
+
+            } else {
+
+                LocalDate dataFim = fimMes(parcelaFilter.getDataFim());
+
+                queryBuilder.append("dataVencimento <= :dataFim");
+                params.put("dataFim", dataFim);
+            }
+        }
+
         PanacheQuery<Parcela> query;
 
         if (queryBuilder.length() > 0) {
+            queryBuilder.append(" order by dataVencimento desc");
             query = find(queryBuilder.toString(), params);
         } else {
-            query = findAll();
+            query = find("order by dataVencimento desc");
         }
 
         return query.list();
+    }
+
+    private String[] getMesAno(ParcelaFilter parcelaFilter) {
+        return parcelaFilter.getReferenciaCobranca().split("/");
+    }
+
+    private LocalDate inicioMes(String mesAno) {
+        YearMonth ym = YearMonth.parse(
+                mesAno,
+                DateTimeFormatter.ofPattern("MM/yyyy")
+        );
+        return ym.atDay(1);
+    }
+
+    private LocalDate fimMes(String mesAno) {
+        YearMonth ym = YearMonth.parse(
+                mesAno,
+                DateTimeFormatter.ofPattern("MM/yyyy")
+        );
+        return ym.atEndOfMonth();
     }
 
 
     public List<ResumoParcelaPorResponsavelDTO> buscarResumoPorResponsavel(ParcelaFilter parcelaFilter) {
 
         StringBuilder jpql = new StringBuilder("""
-        SELECT new org.acme.api.dto.ResumoParcelaPorResponsavelDTO(
-            r.nome,
-            SUM(p.valor)
-        )
-        FROM Parcela p
-        JOIN p.responsavel r
-        JOIN p.despesa d
-        WHERE p.valor > 0
-    """);
+                    SELECT new org.acme.api.dto.ResumoParcelaPorResponsavelDTO(
+                        r.nome,
+                        SUM(p.valor)
+                    )
+                    FROM Parcela p
+                    JOIN p.responsavel r
+                    JOIN p.despesa d
+                    WHERE p.valor > 0
+                """);
 
         Map<String, Object> params = new HashMap<>();
 
         if (parcelaFilter.getReferenciaCobranca() != null && !parcelaFilter.getReferenciaCobranca().isBlank()) {
-            String[] mesAno = parcelaFilter.getReferenciaCobranca().split("/");
+            String[] mesAno = getMesAno(parcelaFilter);
             int mes = Integer.parseInt(mesAno[0]);
             int ano = Integer.parseInt(mesAno[1]);
 
