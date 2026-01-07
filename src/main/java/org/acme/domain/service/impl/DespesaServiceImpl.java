@@ -3,18 +3,15 @@ package org.acme.domain.service.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.acme.api.dto.ResumoDespesaPorContaDTO;
 import org.acme.api.filter.DespesaFilter;
 import org.acme.api.request.DespesaRequest;
 import org.acme.api.request.ParcelaRequest;
 import org.acme.api.request.PlanejamentoParcelasRequest;
-import org.acme.api.request.ResponsavelRequest;
 import org.acme.domain.model.*;
 import org.acme.domain.repository.DespesaRepository;
 import org.acme.domain.service.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,9 +32,6 @@ public class DespesaServiceImpl implements DespesaService {
     private SubgrupoService subgrupoService;
     private ContaService contaService;
     private PlanejamentoParcelasService planejamentoParcelasService;
-
-
-
 
     @Inject
     public DespesaServiceImpl(
@@ -60,7 +54,7 @@ public class DespesaServiceImpl implements DespesaService {
     @Override
     @Transactional
     public Despesa inserirDespesa(DespesaRequest despesaRequest) {
-
+        validarReferenciaCobranca(despesaRequest.getReferenciaCobranca());
         Conta conta = contaService.buscarContaPorId(UUID.fromString(despesaRequest.getContaId()));
         Fornecedor fornecedor = fornecedorService.buscarFornecedorPorId(UUID.fromString(despesaRequest.getFornecedorId()));
 
@@ -186,5 +180,16 @@ public class DespesaServiceImpl implements DespesaService {
     public void deletarDespesa(UUID id) {
         Despesa despesa = buscarDespesaPorId(id);
         despesaRespository.delete(despesa);
+    }
+
+    public List<ResumoDespesaPorContaDTO> buscarResumoPorConta(){
+        return despesaRespository.buscarResumoPorConta();
+    }
+
+    private void validarReferenciaCobranca(String referenciaCobranca) {
+        String regex = "^(0[1-9]|1[0-2])/\\d{4}$";
+        if (referenciaCobranca == null || !referenciaCobranca.matches(regex)) {
+            throw new IllegalArgumentException("O campo referenciaCobranca deve estar no formato MM/AAAA.");
+        }
     }
 }

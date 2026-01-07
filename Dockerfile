@@ -1,9 +1,14 @@
-FROM maven:3.9.6-eclipse-temurin-21 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
+# Imagem com Java 21 + Maven
+FROM maven:3.9.9-eclipse-temurin-21
 
-FROM eclipse-temurin:21-jdk
+# Diretório de trabalho dentro do container
 WORKDIR /app
-COPY --from=build /app/target/quarkus-app/ /app/
-CMD ["java", "-jar", "quarkus-run.jar"]
+
+# Copia tudo do projeto
+COPY . .
+
+# Porta padrão do Quarkus
+EXPOSE 9000
+
+# Roda em modo dev (hot reload)
+CMD ["mvn", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]

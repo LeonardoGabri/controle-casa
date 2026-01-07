@@ -1,6 +1,5 @@
 package org.acme.auth.api.controller;
 
-import jakarta.annotation.security.PermitAll;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -26,16 +25,6 @@ public class UsersController {
     public UsersController(UsersService usersService, ModelMapper modelMapper){
         this.usersService = usersService;
         this.modelMapper = modelMapper;
-    }
-
-    @Path("/setup")
-    @POST
-    @PermitAll // não exige autenticação
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response setupUsuarioInicial(UsersRequest request) {
-        Users user = usersService.inserirUser(request);
-        return Response.status(Response.Status.CREATED).entity(modelMapper.map(user, UsersDTO.class)).build();
     }
 
     @POST

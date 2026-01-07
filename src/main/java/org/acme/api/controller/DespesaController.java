@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Response;
 import org.acme.api.dto.DespesaDTO;
 import org.acme.api.dto.ParcelaDTO;
 import org.acme.api.dto.PlanejamentoParcelasDTO;
+import org.acme.api.dto.ResumoDespesaPorContaDTO;
 import org.acme.api.filter.DespesaFilter;
 import org.acme.api.request.DespesaRequest;
 import org.acme.domain.model.Despesa;
@@ -33,7 +34,6 @@ public class DespesaController {
     @POST
     @Transactional
     public Response inserirDespesa(DespesaRequest despesaRequest) {
-        validarReferenciaCobranca(despesaRequest.getReferenciaCobranca());
         Despesa despesa = despesaService.inserirDespesa(despesaRequest);
         return Response.status(Response.Status.CREATED).entity(modelMapper.map(despesa, DespesaDTO.class)).build();
     }
@@ -84,10 +84,13 @@ public class DespesaController {
         return Response.status(Response.Status.NO_CONTENT).build();
     }
 
-    private void validarReferenciaCobranca(String referenciaCobranca) {
-        String regex = "^(0[1-9]|1[0-2])/\\d{4}$";
-        if (referenciaCobranca == null || !referenciaCobranca.matches(regex)) {
-            throw new IllegalArgumentException("O campo referenciaCobranca deve estar no formato MM/AAAA.");
-        }
+    @GET
+    @Path("resumo-conta")
+    @Transactional
+    public Response resumoTotaisPorConta(@BeanParam DespesaFilter despesaFilter,
+                                     @QueryParam("page") int page,
+                                     @QueryParam("size") int size) {
+      List<ResumoDespesaPorContaDTO> lista = despesaService.buscarResumoPorConta();
+        return Response.status(Response.Status.OK).entity(lista).build();
     }
 }

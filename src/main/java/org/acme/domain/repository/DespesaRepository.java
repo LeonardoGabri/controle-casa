@@ -2,8 +2,8 @@ package org.acme.domain.repository;
 
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.acme.api.dto.ResumoDespesaPorContaDTO;
 import org.acme.api.filter.DespesaFilter;
 import org.acme.domain.model.Despesa;
 
@@ -49,5 +49,21 @@ public class DespesaRepository implements PanacheRepository<Despesa> {
         }
 
         return query.list();
+    }
+
+    public List<ResumoDespesaPorContaDTO> buscarResumoPorConta() {
+
+        return getEntityManager()
+                .createQuery("""
+            SELECT new org.acme.api.dto.ResumoDespesaPorContaDTO(
+                CONCAT(c.banco.nome, ' - ', c.responsavel.nome),
+                SUM(d.valorTotal)
+            )
+            FROM Despesa d
+            JOIN d.conta c
+            WHERE d.valorTotal > 0
+            GROUP BY c.id, c.banco.nome, c.responsavel.nome
+        """, ResumoDespesaPorContaDTO.class)
+                .getResultList();
     }
 }

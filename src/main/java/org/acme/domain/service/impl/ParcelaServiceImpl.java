@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.acme.api.dto.ParcelaDTO;
+import org.acme.api.dto.ResumoParcelaPorResponsavelDTO;
 import org.acme.api.filter.ParcelaFilter;
 import org.acme.api.request.DespesaRequest;
 import org.acme.api.request.ParcelaRequest;
@@ -192,5 +193,9 @@ public class ParcelaServiceImpl implements ParcelaService {
         if (somaPorcentagem.compareTo(BigDecimal.valueOf(100)) != 0) {
             throw new IllegalArgumentException(ERRO_NO_CALCULO_PORCENTAGEM);
         }
+    }
+
+    public List<ResumoParcelaPorResponsavelDTO> buscarResumoParcelaPorResponsavel(ParcelaFilter filter){
+        return parcelaRepository.buscarResumoPorResponsavel(filter);
     }
 }
