@@ -53,6 +53,14 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
             params.put("conta_id", UUID.fromString(parcelaFilter.getContaId()));
         }
 
+        if (parcelaFilter.getResponsavelContaId() != null && !parcelaFilter.getResponsavelContaId().isEmpty()) {
+            if (queryBuilder.length() > 0) {
+                queryBuilder.append(" and ");
+            }
+            queryBuilder.append("despesa.conta.responsavel.id = :responsavel_conta_id");
+            params.put("responsavel_conta_id", UUID.fromString(parcelaFilter.getResponsavelContaId()));
+        }
+
         if (parcelaFilter.getDataIni() != null || parcelaFilter.getDataFim() != null) {
 
             if (queryBuilder.length() > 0) {

@@ -17,4 +17,7 @@ public class ParcelaFilter {
     private String dataIni;
     @QueryParam("dataFim")
     private String dataFim;
+
+    @QueryParam("responsavelConta")
+    private String responsavelContaId;
 }

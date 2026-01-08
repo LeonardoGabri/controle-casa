@@ -23,11 +23,13 @@ public class ResumoMensalRepository {
         );
 
         LocalDate dataInicio = ym.atDay(1);
-        LocalDate dataFim    = ym.atEndOfMonth();
+        LocalDate dataFim = ym.atEndOfMonth();
 
         return em.createQuery("""
                             SELECT new org.acme.api.dto.ResumoMensalDTO(
+                                r.id,
                                 r.nome,
+                                cr.id,
                                 cr.nome,
                                 SUM(p.valor)
                             )
@@ -38,7 +40,7 @@ public class ResumoMensalRepository {
                                 JOIN c.responsavel cr
                             WHERE p.dataVencimento BETWEEN :ini AND :fim
                               AND r.id <> cr.id
-                            GROUP BY r.nome, cr.nome
+                            GROUP BY r.id, r.nome, cr.id, cr.nome
                             ORDER BY cr.nome, r.nome
                         """, ResumoMensalDTO.class)
                 .setParameter("ini", dataInicio)

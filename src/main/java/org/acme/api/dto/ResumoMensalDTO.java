@@ -5,8 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.acme.domain.model.Banco;
+import org.acme.domain.model.Parcela;
+import org.acme.domain.model.Responsavel;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -14,7 +17,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResumoMensalDTO {
-    private String devedor;
-    private String credor;
+    private UUID devedorId;
+    private String devedorNome;
+    private UUID credorId;
+    private String credorNome;
     private BigDecimal valor;
 }
