@@ -16,7 +16,6 @@ public class ParcelaToParcelaDTO extends PropertyMap<Parcela, ParcelaDTO> {
         map().setFornecedorNome(String.valueOf(source.getDespesa().getFornecedor().getNome()));
         map().setParcelaAtual(source.getParcelaAtual());
         map().setDespesaId(String.valueOf(source.getDespesa().getId()));
-        map().setPorcentagemDivisao(source.getPorcentagemDivisao());
         map().setConta(source.getDespesa().getConta());
         map().setTotalParcelas(source.getDespesa().getNumeroParcelas());
     }

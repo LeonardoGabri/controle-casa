@@ -65,7 +65,6 @@ public class ParcelaServiceImpl implements ParcelaService {
                     .dataVencimento(parcelaRequest.getDataVencimento())
                     .valor(parcelaRequest.getValor())
                     .parcelaAtual(parcelaRequest.getParcelaAtual())
-                    .porcentagemDivisao(parcelaRequest.getPorcentagemDivisao() != null ? parcelaRequest.getPorcentagemDivisao() : null)
                     .despesa(despesa)
                     .build();
             parcelaRepository.persist(parcela);
@@ -85,7 +84,6 @@ public class ParcelaServiceImpl implements ParcelaService {
             parcela.setResponsavel(responsavel);
             parcela.setValor(parcelaRequest.getValor());
             parcela.setParcelaAtual(parcelaRequest.getParcelaAtual());
-            parcela.setPorcentagemDivisao(parcelaRequest.getPorcentagemDivisao());
             parcela.setDespesa(despesa);
 
             parcelaRepository.persist(parcela);
@@ -161,7 +159,6 @@ public class ParcelaServiceImpl implements ParcelaService {
                                                 .buscarResponsavelPorId(UUID.fromString(planejamento.getResponsavelId()))
                                                 .getNome()
                                 )
-                                .porcentagemDivisao(planejamento.getPorcentagemDivisao())
                                 .parcelaAtual(String.valueOf(i))
                                 .valor(valorResponsavel)
                                 .fornecedorId(despesaRequest.getFornecedorId())

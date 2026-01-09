@@ -23,7 +23,6 @@ public class ParcelaDTO {
     private BigDecimal valor;
     private String parcelaAtual;
     private Integer totalParcelas;
-    private Double porcentagemDivisao;
     private String fornecedorId;
     private String fornecedorNome;
     private String despesaId;

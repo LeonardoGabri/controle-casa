@@ -17,7 +17,6 @@ public class ParcelaRequest {
     private String responsavelId;
     private LocalDate dataVencimento;
     private BigDecimal valor;
-    private Double porcentagemDivisao;
     private String despesaId;
     private String parcelaAtual;
 }

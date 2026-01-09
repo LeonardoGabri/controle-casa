@@ -35,9 +35,6 @@ public class Parcela extends PanacheEntityBase {
     @Column(name = "valor")
     private BigDecimal valor;
 
-    @Column(name = "porcentagem_divisao")
-    private Double porcentagemDivisao;
-
     @Column(name = "parcela_atual")
     private String parcelaAtual;
 

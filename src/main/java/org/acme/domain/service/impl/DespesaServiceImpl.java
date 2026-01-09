@@ -130,7 +130,6 @@ public class DespesaServiceImpl implements DespesaService {
                         )
                         .dataVencimento(item.getDataVencimento())
                         .valor(item.getValor())
-                        .porcentagemDivisao(item.getPorcentagemDivisao())
                         .parcelaAtual(item.getParcelaAtual())
                         .build()
                 )
