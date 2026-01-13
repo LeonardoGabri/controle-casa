@@ -21,6 +21,7 @@ import org.acme.domain.service.CriptomoedaService;
 import org.acme.domain.service.ResponsavelService;
 import org.modelmapper.ModelMapper;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -59,6 +60,7 @@ public class CriptomoedaServiceImpl implements CriptomoedaService {
         Criptomoeda criptomoeda = buscarPorId(id);
         try {
             criptomoeda.setValor(request.getValor());
+            criptomoeda.setDataAtualizacao(LocalDate.now());
             criptomoedaRepository.persist(criptomoeda);
             return criptomoeda;
         } catch (RuntimeException e) {

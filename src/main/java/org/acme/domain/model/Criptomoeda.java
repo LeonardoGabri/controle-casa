@@ -9,6 +9,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -32,4 +34,8 @@ public class Criptomoeda {
 
     @Column(name = "valor")
     private BigDecimal valor;
+
+    @Column(name = "data_atualizacao")
+    private LocalDate dataAtualizacao = LocalDate.now();;
+
 }
