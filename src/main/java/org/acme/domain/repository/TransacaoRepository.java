@@ -23,7 +23,7 @@ public class TransacaoRepository implements PanacheRepository<Transacao> {
 
         if (transacaoFilter.getPatrimonio() != null && !transacaoFilter.getPatrimonio().isEmpty()) {
             queryBuilder.append("patrimonio.id = :patrimonio_id");
-            params.put("patrimonio_id", "%" + transacaoFilter.getPatrimonio() + "%");
+            params.put("patrimonio_id", UUID.fromString(transacaoFilter.getPatrimonio()));
         }
 
         if (transacaoFilter.getTipo() != null) {
@@ -68,9 +68,10 @@ public class TransacaoRepository implements PanacheRepository<Transacao> {
         PanacheQuery<Transacao> query;
 
         if (queryBuilder.length() > 0) {
+            queryBuilder.append(" order by dataTransacao desc");
             query = find(queryBuilder.toString(), params);
         } else {
-            query = findAll();
+            query = find("order by dataTransacao desc");
         }
 
         return query.list();
