@@ -10,12 +10,13 @@ import org.acme.domain.model.Subgrupo;
 import org.acme.domain.repository.FornecedorRepository;
 import org.acme.domain.service.FornecedorService;
 import org.acme.domain.service.SubgrupoService;
+import org.acme.infra.tenant.TenantAware;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.UUID;
 
-
+@TenantAware
 @ApplicationScoped
 public class FornecedorServiceImpl implements FornecedorService {
 

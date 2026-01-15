@@ -17,6 +17,7 @@ import org.acme.domain.service.DespesaService;
 import org.acme.domain.service.FornecedorService;
 import org.acme.domain.service.ParcelaService;
 import org.acme.domain.service.ResponsavelService;
+import org.acme.infra.tenant.TenantAware;
 import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
+@TenantAware
 @ApplicationScoped
 public class ParcelaServiceImpl implements ParcelaService {
 

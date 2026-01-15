@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 @ApplicationScoped
 public class UsersServiceImpl implements UsersService {
-    private final String MSG_NAO_ENCONTRADO = "Não encontrado registro com id = %s";
+    private final String MSG_NAO_ENCONTRADO = "Não encontrado registro por parametro = %s";
     private final String ERRO_AO_DELETAR = "erro ao deletar registro";
 
     private ModelMapper modelMapper;
@@ -63,6 +63,6 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Optional<Users> findByUsername(String username) {
-        return usersRepository.findByUsername(username);
+        return Optional.ofNullable(usersRepository.findByUsername(username).orElseThrow(() -> new RuntimeException(String.format(MSG_NAO_ENCONTRADO, username))));
     }
 }

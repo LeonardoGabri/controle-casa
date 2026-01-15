@@ -21,12 +21,13 @@ import org.acme.domain.service.BancoService;
 import org.acme.domain.service.ContaService;
 import org.acme.domain.service.GrupoService;
 import org.acme.domain.service.ResponsavelService;
+import org.acme.infra.tenant.TenantAware;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
+@TenantAware
 @ApplicationScoped
 public class ContaServiceImpl implements ContaService {
 

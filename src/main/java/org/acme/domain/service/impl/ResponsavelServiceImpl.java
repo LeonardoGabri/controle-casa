@@ -12,11 +12,12 @@ import org.acme.domain.model.Responsavel;
 import org.acme.domain.repository.ResponsavelRepository;
 import org.acme.domain.service.ParcelaService;
 import org.acme.domain.service.ResponsavelService;
+import org.acme.infra.tenant.TenantAware;
 
 import java.util.List;
 import java.util.UUID;
 
-
+@TenantAware
 @ApplicationScoped
 public class ResponsavelServiceImpl implements ResponsavelService {
 
@@ -67,6 +68,7 @@ public class ResponsavelServiceImpl implements ResponsavelService {
         }
     }
 
+    @Transactional
     @Override
     public List<Responsavel> listarResponsavelFiltros(ResponsavelFilter responsavelFilter, int page, int size) {
         List<Responsavel> responsaveis = responsavelRepository.paginacaoComFiltros(responsavelFilter,page, size);

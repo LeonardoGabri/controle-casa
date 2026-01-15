@@ -6,11 +6,12 @@ import org.acme.api.dto.ResumoMensalDTO;
 import org.acme.domain.repository.BancoRepository;
 import org.acme.domain.repository.ResumoMensalRepository;
 import org.acme.domain.service.ResumoMensalService;
+import org.acme.infra.tenant.TenantAware;
 import org.acme.infra.validacao.ReferenciaCobrancaValidator;
 
 import java.util.List;
 
-
+@TenantAware
 @ApplicationScoped
 public class ResumoMensalServiceImpl implements ResumoMensalService {
 

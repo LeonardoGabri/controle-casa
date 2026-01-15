@@ -11,9 +11,12 @@ import org.acme.domain.model.Subgrupo;
 import org.acme.domain.repository.SubgrupoRepository;
 import org.acme.domain.service.GrupoService;
 import org.acme.domain.service.SubgrupoService;
+import org.acme.infra.tenant.TenantAware;
 
 import java.util.List;
 import java.util.UUID;
+
+@TenantAware
 @ApplicationScoped
 public class SubgrupoServiceImpl implements SubgrupoService {
 

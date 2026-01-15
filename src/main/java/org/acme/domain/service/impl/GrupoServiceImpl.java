@@ -9,11 +9,12 @@ import org.acme.api.request.GrupoRequest;
 import org.acme.domain.model.Grupo;
 import org.acme.domain.repository.GrupoRepository;
 import org.acme.domain.service.GrupoService;
+import org.acme.infra.tenant.TenantAware;
 
 import java.util.List;
 import java.util.UUID;
 
-
+@TenantAware
 @ApplicationScoped
 public class GrupoServiceImpl implements GrupoService {
 

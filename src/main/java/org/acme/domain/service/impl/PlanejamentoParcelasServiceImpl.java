@@ -10,11 +10,12 @@ import org.acme.domain.model.*;
 import org.acme.domain.repository.DespesaRepository;
 import org.acme.domain.repository.PlanejamentoParcelasRepository;
 import org.acme.domain.service.*;
+import org.acme.infra.tenant.TenantAware;
 
 import java.util.List;
 import java.util.UUID;
 
-
+@TenantAware
 @ApplicationScoped
 public class PlanejamentoParcelasServiceImpl implements PlanejamentoParcelasService {
 

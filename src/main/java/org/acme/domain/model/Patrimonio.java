@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.acme.domain.enums.MoedaEnum;
 import org.acme.domain.enums.TipoContaEnum;
 import org.acme.domain.enums.TipoPatrimonioEnum;
+import org.acme.infra.tenant.TenantAware;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 

@@ -16,4 +16,6 @@ public interface UsersService {
     public void deletarUser(UUID id);
 
     Optional<Users> findByUsername(String username);
+
+
 }

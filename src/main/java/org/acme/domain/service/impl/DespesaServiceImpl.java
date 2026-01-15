@@ -11,12 +11,13 @@ import org.acme.api.request.PlanejamentoParcelasRequest;
 import org.acme.domain.model.*;
 import org.acme.domain.repository.DespesaRepository;
 import org.acme.domain.service.*;
+import org.acme.infra.tenant.TenantAware;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
+@TenantAware
 @ApplicationScoped
 public class DespesaServiceImpl implements DespesaService {
 

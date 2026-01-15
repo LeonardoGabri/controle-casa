@@ -11,12 +11,13 @@ import org.acme.domain.model.Patrimonio;
 import org.acme.domain.repository.PatrimonioRepository;
 import org.acme.domain.service.ContaService;
 import org.acme.domain.service.PatrimonioService;
+import org.acme.infra.tenant.TenantAware;
 import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.UUID;
 
-
+@TenantAware
 @ApplicationScoped
 public class PatrimonioServiceImpl implements PatrimonioService {
 

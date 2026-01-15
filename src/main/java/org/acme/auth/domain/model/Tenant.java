@@ -1,7 +1,9 @@
 package org.acme.auth.domain.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.UUID;
 @Entity
 @Table(name = "tenant")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Tenant {
     @Id
     @GeneratedValue(generator = "UUID")

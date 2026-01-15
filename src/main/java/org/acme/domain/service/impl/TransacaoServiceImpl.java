@@ -17,13 +17,14 @@ import org.acme.domain.repository.TransacaoRepository;
 import org.acme.domain.service.ContaService;
 import org.acme.domain.service.PatrimonioService;
 import org.acme.domain.service.TransacaoService;
+import org.acme.infra.tenant.TenantAware;
 import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-
+@TenantAware
 @ApplicationScoped
 public class TransacaoServiceImpl implements TransacaoService {
 
