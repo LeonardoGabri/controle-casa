@@ -17,9 +17,21 @@ public class ResumoMensalController {
     }
 
     @GET
-    @Path("/buscar")
+    @Path("/buscar/acerto-responsaveis")
     public Response buscarResumoMensal(@BeanParam ResumoMensalFilter referenciaCobranca,
                                        @QueryParam("size") int size) {
-        return Response.status(Response.Status.OK).entity(service.buscarResumoMensal(referenciaCobranca.getReferenciaCobranca())).build();
+        return Response.status(Response.Status.OK).entity(service.buscarAcertoResponsavel(referenciaCobranca.getReferenciaCobranca())).build();
+    }
+
+    @GET
+    @Path("/buscar/obrigacoes-financeiras")
+    public Response buscarObrigacoesFinanceiras(
+            @BeanParam ResumoMensalFilter referenciaCobranca
+    ) {
+        return Response.ok(
+                service.buscarObrigacaoFinanceira(
+                        referenciaCobranca.getReferenciaCobranca()
+                )
+        ).build();
     }
 }

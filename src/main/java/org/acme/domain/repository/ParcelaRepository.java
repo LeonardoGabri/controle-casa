@@ -4,7 +4,10 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.acme.api.dto.ResumoDespesaPorContaDTO;
+import org.acme.api.dto.ResumoParcelaPorContaDTO;
 import org.acme.api.dto.ResumoParcelaPorResponsavelDTO;
 import org.acme.api.dto.ValoresDTO;
 import org.acme.api.filter.ParcelaFilter;
@@ -19,6 +22,9 @@ import java.util.*;
 
 @ApplicationScoped
 public class ParcelaRepository implements PanacheRepository<Parcela> {
+    @PersistenceContext
+    EntityManager em;
+
     public Optional<Parcela> findById(UUID id) {
         return find("id", id).firstResultOptional();
     }
@@ -127,38 +133,64 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
 
     public List<ResumoParcelaPorResponsavelDTO> buscarResumoPorResponsavel(ParcelaFilter parcelaFilter) {
 
-        StringBuilder jpql = new StringBuilder("""
-                    SELECT new org.acme.api.dto.ResumoParcelaPorResponsavelDTO(
-                        r.nome,
-                        SUM(p.valor)
-                    )
-                    FROM Parcela p
-                    JOIN p.responsavel r
-                    JOIN p.despesa d
-                    WHERE p.valor > 0
-                """);
+        YearMonth ym = YearMonth.parse(
+                parcelaFilter.getReferenciaCobranca(),
+                DateTimeFormatter.ofPattern("MM/yyyy")
+        );
 
-        Map<String, Object> params = new HashMap<>();
+        LocalDate dataInicio = ym.atDay(1);
+        LocalDate dataFim = ym.atEndOfMonth();
 
-        if (parcelaFilter.getReferenciaCobranca() != null && !parcelaFilter.getReferenciaCobranca().isBlank()) {
-            String[] mesAno = getMesAno(parcelaFilter);
-            int mes = Integer.parseInt(mesAno[0]);
-            int ano = Integer.parseInt(mesAno[1]);
+        return em.createQuery("""
+                        SELECT new org.acme.api.dto.ResumoParcelaPorResponsavelDTO(
+                            r.id,
+                            r.nome,
+                            SUM(p.valor)
+                        )
+                        FROM Parcela p
+                            JOIN p.responsavel r
+                            JOIN p.despesa d
+                        WHERE p.dataVencimento BETWEEN :ini AND :fim
+                          AND p.valor > 0
+                        GROUP BY r.id, r.nome
+                        ORDER BY r.nome
+                        """, ResumoParcelaPorResponsavelDTO.class)
+                .setParameter("ini", dataInicio)
+                .setParameter("fim", dataFim)
+                .getResultList();
+    }
 
-            jpql.append(" AND MONTH(p.dataVencimento) = :mes ");
-            jpql.append(" AND YEAR(p.dataVencimento) = :ano ");
+    public List<ResumoParcelaPorContaDTO> buscarResumoPorConta(ParcelaFilter parcelaFilter) {
 
-            params.put("mes", mes);
-            params.put("ano", ano);
-        }
+        YearMonth ym = YearMonth.parse(
+                parcelaFilter.getReferenciaCobranca(),
+                DateTimeFormatter.ofPattern("MM/yyyy")
+        );
 
-        jpql.append(" GROUP BY r.id, r.nome ");
+        LocalDate dataInicio = ym.atDay(1);
+        LocalDate dataFim = ym.atEndOfMonth();
 
-        var query = getEntityManager()
-                .createQuery(jpql.toString(), ResumoParcelaPorResponsavelDTO.class);
-
-        params.forEach(query::setParameter);
-
-        return query.getResultList();
+        return em.createQuery("""
+                        SELECT new org.acme.api.dto.ResumoParcelaPorContaDTO(
+                            c.id,
+                            CONCAT(c.banco.nome, CONCAT(' - ', c.responsavel.nome)),
+                            SUM(p.valor)
+                        )
+                        FROM Parcela p
+                            JOIN p.despesa d
+                            JOIN d.conta c
+                        WHERE p.dataVencimento BETWEEN :ini AND :fim
+                          AND p.valor > 0
+                        GROUP BY
+                            c.id,
+                            c.banco.nome,
+                            c.responsavel.nome
+                        ORDER BY
+                            c.banco.nome,
+                            c.responsavel.nome
+                        """, ResumoParcelaPorContaDTO.class)
+                .setParameter("ini", dataInicio)
+                .setParameter("fim", dataFim)
+                .getResultList();
     }
 }

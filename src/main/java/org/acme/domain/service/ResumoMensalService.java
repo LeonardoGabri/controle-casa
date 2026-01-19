@@ -1,13 +1,12 @@
 package org.acme.domain.service;
 
-import org.acme.api.dto.BancoDTO;
-import org.acme.api.dto.ResumoMensalDTO;
-import org.acme.domain.model.Banco;
+import org.acme.api.dto.AcertoResponsavelDTO;
+import org.acme.api.dto.ObrigacaoFinanceiraDTO;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface ResumoMensalService {
-    List<ResumoMensalDTO> buscarResumoMensal(String referenciaCobranca);
+    List<AcertoResponsavelDTO> buscarAcertoResponsavel(String referenciaCobranca);
+    List<ObrigacaoFinanceiraDTO> buscarObrigacaoFinanceira(String referenciaCobranca);
 
 }

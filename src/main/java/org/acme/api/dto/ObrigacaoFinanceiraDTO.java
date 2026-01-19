@@ -10,10 +10,16 @@ import java.util.UUID;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class ResumoParcelaPorResponsavelDTO {
+@AllArgsConstructor
+public class ObrigacaoFinanceiraDTO {
     private UUID responsavelId;
     private String responsavelNome;
+
+    private UUID bancoId;
+    private String bancoNome;
+
+    private UUID contaId;
+
     private BigDecimal valorTotal;
 }

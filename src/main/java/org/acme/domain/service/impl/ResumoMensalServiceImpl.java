@@ -2,12 +2,13 @@ package org.acme.domain.service.impl;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.acme.api.dto.ResumoMensalDTO;
-import org.acme.domain.repository.BancoRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import org.acme.api.dto.AcertoResponsavelDTO;
+import org.acme.api.dto.ObrigacaoFinanceiraDTO;
 import org.acme.domain.repository.ResumoMensalRepository;
 import org.acme.domain.service.ResumoMensalService;
 import org.acme.infra.tenant.TenantAware;
-import org.acme.infra.validacao.ReferenciaCobrancaValidator;
 
 import java.util.List;
 
@@ -22,14 +23,22 @@ public class ResumoMensalServiceImpl implements ResumoMensalService {
 
     private ResumoMensalRepository resumoMensalRepository;
 
+    @PersistenceContext
+    EntityManager em;
+
     @Inject
     public ResumoMensalServiceImpl(ResumoMensalRepository repository) {
         this.resumoMensalRepository = repository;
     }
 
     @Override
-    public List<ResumoMensalDTO> buscarResumoMensal(String referenciaCobranca) {
-        return resumoMensalRepository.buscarFechamentoMensal(referenciaCobranca);
+    public List<AcertoResponsavelDTO> buscarAcertoResponsavel(String referenciaCobranca) {
+        return resumoMensalRepository.buscarAcertoResponsaveis(referenciaCobranca);
+    }
+
+    @Override
+    public List<ObrigacaoFinanceiraDTO> buscarObrigacaoFinanceira(String referenciaCobranca) {
+        return resumoMensalRepository.buscarObrigacoesFinanceiras(referenciaCobranca);
     }
 }
 

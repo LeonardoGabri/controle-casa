@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.acme.api.dto.ParcelaDTO;
 import org.acme.api.dto.ParcelaValorTotalDTO;
+import org.acme.api.dto.ResumoParcelaPorContaDTO;
 import org.acme.api.dto.ResumoParcelaPorResponsavelDTO;
 import org.acme.api.filter.ParcelaFilter;
 import org.acme.api.request.DespesaRequest;
@@ -79,6 +80,16 @@ public class ParcelaController {
                                      @QueryParam("page") int page,
                                      @QueryParam("size") int size) {
         List<ResumoParcelaPorResponsavelDTO> resumo = parcelaService.buscarResumoParcelaPorResponsavel(parcelaFilter);
+        return Response.status(Response.Status.CREATED).entity(resumo).build();
+    }
+
+    @GET
+    @Path("/resumo-conta")
+    @Transactional
+    public Response buscarResumoParcelaPorConta(@BeanParam ParcelaFilter parcelaFilter,
+                                                      @QueryParam("page") int page,
+                                                      @QueryParam("size") int size) {
+        List<ResumoParcelaPorContaDTO> resumo = parcelaService.buscarResumoParcelaPorConta(parcelaFilter);
         return Response.status(Response.Status.CREATED).entity(resumo).build();
     }
 }

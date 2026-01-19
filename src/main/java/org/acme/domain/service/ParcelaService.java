@@ -1,6 +1,7 @@
 package org.acme.domain.service;
 
 import org.acme.api.dto.ParcelaDTO;
+import org.acme.api.dto.ResumoParcelaPorContaDTO;
 import org.acme.api.dto.ResumoParcelaPorResponsavelDTO;
 import org.acme.api.dto.ValoresDTO;
 import org.acme.api.filter.ParcelaFilter;
@@ -22,4 +23,6 @@ public interface ParcelaService {
     public List<ParcelaDTO> calcularParcelas(DespesaRequest despesaRequest);
     public void validarPorcentagemPlanejamento(List<PlanejamentoParcelasRequest> planejamentoParcelasRequests);
     public List<ResumoParcelaPorResponsavelDTO> buscarResumoParcelaPorResponsavel(ParcelaFilter filter);
+    public List<ResumoParcelaPorContaDTO> buscarResumoParcelaPorConta(ParcelaFilter filter);
+
 }

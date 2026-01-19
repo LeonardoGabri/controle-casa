@@ -28,4 +28,7 @@ public class Responsavel extends Base {
 
     @Column(name = "nome")
     private String nome;
+
+    @Column(name = "titular", nullable = false)
+    private Boolean titular;
 }

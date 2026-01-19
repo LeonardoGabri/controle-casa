@@ -60,9 +60,13 @@ public class SubgrupoServiceImpl implements SubgrupoService {
     @Override
     public Subgrupo atualizarSubgrupo(SubgrupoRequest subgrupoRequest, UUID id) {
         Subgrupo subgrupo = this.buscarSubgrupoPorId(id);
-        Grupo grupo = grupoService.buscarGrupoPorId(UUID.fromString(subgrupoRequest.getGrupoId()));
         validaNomeSubgrupo(subgrupoRequest, id);
+        Grupo grupo = null;
+
         try{
+            if(subgrupoRequest.getGrupoId() != null){
+                grupo = grupoService.buscarGrupoPorId(UUID.fromString(subgrupoRequest.getGrupoId()));
+            }
             subgrupo.setNome(subgrupoRequest.getNome());
             subgrupo.setGrupo(grupo);
             subgrupoRepository.persist(subgrupo);

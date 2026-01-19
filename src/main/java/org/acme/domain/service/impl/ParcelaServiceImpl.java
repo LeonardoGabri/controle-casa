@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.acme.api.dto.ParcelaDTO;
+import org.acme.api.dto.ResumoParcelaPorContaDTO;
 import org.acme.api.dto.ResumoParcelaPorResponsavelDTO;
 import org.acme.api.filter.ParcelaFilter;
 import org.acme.api.request.DespesaRequest;
@@ -195,5 +196,9 @@ public class ParcelaServiceImpl implements ParcelaService {
 
     public List<ResumoParcelaPorResponsavelDTO> buscarResumoParcelaPorResponsavel(ParcelaFilter filter){
         return parcelaRepository.buscarResumoPorResponsavel(filter);
+    }
+
+    public List<ResumoParcelaPorContaDTO> buscarResumoParcelaPorConta(ParcelaFilter filter){
+        return parcelaRepository.buscarResumoPorConta(filter);
     }
 }

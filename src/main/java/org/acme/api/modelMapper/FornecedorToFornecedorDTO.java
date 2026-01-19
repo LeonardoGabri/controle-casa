@@ -11,7 +11,7 @@ public class FornecedorToFornecedorDTO extends PropertyMap<Fornecedor, Fornecedo
     protected void configure() {
         map().setId(source.getId());
         map().setNome(source.getNome());
-        map().setSubgrupo(source.getSubgrupo() != null ? source.getSubgrupo() : null);
+        map().setSubgrupo(source.getSubgrupo());
 
     }
 }
