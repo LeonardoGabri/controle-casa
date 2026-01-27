@@ -3,6 +3,8 @@ package org.acme.domain.service.impl;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.acme.api.dto.ParcelaDTO;
+import org.acme.api.dto.PlanejamentoParcelasDTO;
 import org.acme.api.filter.DespesaFilter;
 import org.acme.api.request.DespesaRequest;
 import org.acme.api.request.PlanejamentoParcelasRequest;
@@ -12,8 +14,13 @@ import org.acme.domain.repository.PlanejamentoParcelasRepository;
 import org.acme.domain.service.*;
 import org.acme.infra.tenant.TenantAware;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @TenantAware
 @ApplicationScoped
@@ -91,4 +98,61 @@ public class PlanejamentoParcelasServiceImpl implements PlanejamentoParcelasServ
             throw new RuntimeException(String.format(ERRO_AO_DELETAR));
         }
     }
+
+    @Override
+    public List<PlanejamentoParcelasDTO> criarPlanejamentoParcelas(List<ParcelaDTO> parcelas) {
+
+        // 1. Agrupa e soma valores por responsável (usando ID)
+        Map<String, BigDecimal> totalPorResponsavel =
+                parcelas.stream()
+                        .filter(p -> p.getValor() != null)
+                        .collect(Collectors.groupingBy(
+                                ParcelaDTO::getResponsavelId,
+                                Collectors.reducing(
+                                        BigDecimal.ZERO,
+                                        ParcelaDTO::getValor,
+                                        BigDecimal::add
+                                )
+                        ));
+
+        // 2. Total geral
+        BigDecimal totalGeral = totalPorResponsavel.values().stream()
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // 3. Nome do responsável (map auxiliar)
+        Map<String, String> nomePorResponsavel =
+                parcelas.stream()
+                        .collect(Collectors.toMap(
+                                ParcelaDTO::getResponsavelId,
+                                ParcelaDTO::getResponsavelNome,
+                                (nome1, nome2) -> nome1 // mantém o primeiro
+                        ));
+
+        // 4. Monta o preview do planejamento
+        return totalPorResponsavel.entrySet()
+                .stream()
+                .map(entry -> {
+                    String responsavelId = entry.getKey();
+                    BigDecimal total = entry.getValue();
+
+                    double percentual = 0.0;
+                    if (totalGeral.compareTo(BigDecimal.ZERO) > 0) {
+                        percentual = total
+                                .multiply(BigDecimal.valueOf(100))
+                                .divide(totalGeral, 2, RoundingMode.HALF_UP)
+                                .doubleValue();
+                    }
+
+                    return PlanejamentoParcelasDTO.builder()
+                            .id(UUID.randomUUID()) // apenas para o preview
+                            .responsavelId(responsavelId)
+                            .responsavelNome(nomePorResponsavel.get(responsavelId))
+                            .porcentagemDivisao(percentual)
+                            .build();
+                })
+                .sorted(Comparator.comparing(PlanejamentoParcelasDTO::getResponsavelNome))
+                .toList();
+    }
+
+
 }

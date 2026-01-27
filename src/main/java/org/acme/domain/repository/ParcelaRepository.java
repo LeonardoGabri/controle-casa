@@ -67,6 +67,14 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
             params.put("responsavel_conta_id", UUID.fromString(parcelaFilter.getResponsavelContaId()));
         }
 
+        if (parcelaFilter.getFornecedorId() != null && !parcelaFilter.getFornecedorId().isEmpty()) {
+            if (queryBuilder.length() > 0) {
+                queryBuilder.append(" and ");
+            }
+            queryBuilder.append("despesa.fornecedor.id = :fornecedor_id");
+            params.put("fornecedor_id", UUID.fromString(parcelaFilter.getFornecedorId()));
+        }
+
         if (parcelaFilter.getDataIni() != null || parcelaFilter.getDataFim() != null) {
 
             if (queryBuilder.length() > 0) {
@@ -141,7 +149,7 @@ public class ParcelaRepository implements PanacheRepository<Parcela> {
         LocalDate dataInicio = ym.atDay(1);
         LocalDate dataFim = ym.atEndOfMonth();
 
-        return em.createQuery("""
+        return em.createQuery("""   
                         SELECT new org.acme.api.dto.ResumoParcelaPorResponsavelDTO(
                             r.id,
                             r.nome,

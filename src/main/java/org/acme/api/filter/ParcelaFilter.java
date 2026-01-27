@@ -20,4 +20,7 @@ public class ParcelaFilter {
 
     @QueryParam("responsavelConta")
     private String responsavelContaId;
+
+    @QueryParam("fornecedor")
+    private String fornecedorId;
 }

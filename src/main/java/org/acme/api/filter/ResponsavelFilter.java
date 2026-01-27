@@ -7,4 +7,7 @@ import lombok.Data;
 public class ResponsavelFilter {
     @QueryParam("nome")
     private String nome;
+
+    @QueryParam("titular")
+    private Boolean titular;
 }

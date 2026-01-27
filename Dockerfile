@@ -1,14 +1,18 @@
-# Imagem com Java 21 + Maven
-FROM maven:3.9.9-eclipse-temurin-21
+# ---------- build ----------
+FROM maven:3.9.9-eclipse-temurin-21 AS build
+WORKDIR /build
+COPY pom.xml .
+RUN mvn -B -q dependency:go-offline
+COPY src ./src
+RUN mvn -B -q package -DskipTests
 
-# Diretório de trabalho dentro do container
+# ---------- runtime ----------
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-# Copia tudo do projeto
-COPY . .
+COPY --from=build /build/target/quarkus-app /app/quarkus-app
 
-# Porta padrão do Quarkus
-EXPOSE 9000
+ENV PORT=8080
+EXPOSE 8080
 
-# Roda em modo dev (hot reload)
-CMD ["mvn", "quarkus:dev", "-Dquarkus.http.host=0.0.0.0"]
+ENTRYPOINT ["java", "-jar", "/app/quarkus-app/quarkus-run.jar"]

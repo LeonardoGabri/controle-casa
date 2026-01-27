@@ -24,6 +24,15 @@ public class ResponsavelRepository implements PanacheRepository<Responsavel> {
             params.put("nome", "%" + responsavelFilter.getNome().toUpperCase() + "%");
         }
 
+        if (responsavelFilter.getTitular() != null) {
+            if (queryBuilder.length() > 0) {
+                queryBuilder.append(" and ");
+            }
+            queryBuilder.append("titular = :titular");
+            params.put("titular", responsavelFilter.getTitular());
+        }
+
+
         PanacheQuery<Responsavel> query;
 
         if (queryBuilder.length() > 0) {

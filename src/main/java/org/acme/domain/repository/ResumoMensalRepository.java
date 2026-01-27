@@ -75,6 +75,7 @@ public class ResumoMensalRepository {
                                 JOIN c.banco b
                             WHERE p.dataVencimento BETWEEN :ini AND :fim
                               AND r.titular = true
+                              AND c.tipo <> 'BENEFICIO'
                             GROUP BY r.id, r.nome, b.id, b.nome, c.id
                             ORDER BY r.nome, b.nome
                         """, ObrigacaoFinanceiraDTO.class)
