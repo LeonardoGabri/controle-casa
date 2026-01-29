@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      REGION: ${{ secrets.GCP_REGION }}
-      REPOSITORY: ${{ secrets.GCP_REPOSITORY }}
+      REGION: us-central1
+      REPOSITORY: ar-controle-financas-back
       IMAGE_NAME: controle-financas-backend
       SERVICE_NAME: controle-financas-backend
 
