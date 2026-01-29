@@ -1,6 +1,7 @@
 package org.acme.auth.api.controller;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
+import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
@@ -37,5 +38,12 @@ public class AuthController {
         Set<String> roles = Set.of("user");
         String token = JwtGenerator.generateJwt(user.getUsername(), roles);
         return Response.ok(new AuthResponse(token)).build();
+    }
+
+    @GET
+    @Path("/ping")
+    @PermitAll
+    public String ping() {
+        return "ok";
     }
 }
