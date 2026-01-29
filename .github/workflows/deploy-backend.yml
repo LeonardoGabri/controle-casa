@@ -15,6 +15,12 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      REGION: ${{ secrets.GCP_REGION }}
+      REPOSITORY: ${{ secrets.GCP_REPOSITORY }}
+      IMAGE_NAME: controle-financas-backend
+      SERVICE_NAME: controle-financas-backend
 
     steps:
       - name: Checkout code
@@ -51,3 +57,4 @@ jobs:
               DATABASE_URL=${{ secrets.DATABASE_URL }},\
               DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }},\
               DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+          
