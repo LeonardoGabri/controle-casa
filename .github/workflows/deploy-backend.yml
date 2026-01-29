@@ -61,8 +61,5 @@ jobs:
             --region=$REGION \
             --platform=managed \
             --allow-unauthenticated \
-            --set-env-vars \
-              DATABASE_URL=${{ secrets.DATABASE_URL }},\
-              DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }},\
-              DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
+            --set-env-vars DATABASE_URL=${{ secrets.DATABASE_URL }},DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }},DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
           
