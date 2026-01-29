@@ -21,6 +21,7 @@ jobs:
       REPOSITORY: ar-controle-financas-back
       IMAGE_NAME: controle-financas-backend
       SERVICE_NAME: controle-financas
+      CLOUD_SQL_INSTANCE: ${{ vars.CLOUD_SQL_INSTANCE }}
 
     steps:
       - name: Debug variables
@@ -61,5 +62,5 @@ jobs:
             --region=$REGION \
             --platform=managed \
             --allow-unauthenticated \
-            --set-env-vars DATABASE_URL=${{ secrets.DATABASE_URL }},DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }},DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
-          
+            --add-cloudsql-instances=$CLOUD_SQL_INSTANCE \
+            --set-env-vars DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }},DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }},CLOUD_SQL_INSTANCE=$CLOUD_SQL_INSTANCE
