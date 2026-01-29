@@ -20,7 +20,7 @@ jobs:
       REGION: us-central1
       REPOSITORY: ar-controle-financas-back
       IMAGE_NAME: controle-financas-backend
-      SERVICE_NAME: controle-financas-backend
+      SERVICE_NAME: controle-financas
 
     steps:
       - name: Debug variables
