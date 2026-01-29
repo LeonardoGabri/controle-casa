@@ -23,6 +23,14 @@ jobs:
       SERVICE_NAME: controle-financas-backend
 
     steps:
+      - name: Debug variables
+        run: |
+          echo "PROJECT_ID=$PROJECT_ID"
+          echo "REGION=$REGION"
+          echo "REPOSITORY=$REPOSITORY"
+          echo "IMAGE_NAME=$IMAGE_NAME"
+          echo "FINAL_IMAGE=$REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE_NAME:latest"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
