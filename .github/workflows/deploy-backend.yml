@@ -63,7 +63,5 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --add-cloudsql-instances=$CLOUD_SQL_INSTANCE \
-            --set-env-vars DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }},DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }},CLOUD_SQL_INSTANCE=$CLOUD_SQL_INSTANCE
-            --set-secrets \
-            jwt-private-key=jwt-private-key:latest:JWT_PRIVATE_KEY_FILE \
-            jwt-public-key=jwt-public-key:latest:JWT_PUBLIC_KEY_FILE
+            --set-env-vars DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }},DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }},CLOUD_SQL_INSTANCE=$CLOUD_SQL_INSTANCE \
+            --update-secrets=/var/secrets/privateKey.pem=jwt-private-key:latest,/var/secrets/publicKey.pem=jwt-public-key:latest
