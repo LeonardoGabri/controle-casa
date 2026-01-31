@@ -40,6 +40,7 @@ public class ResponsavelServiceImpl implements ResponsavelService {
         validaNomeResponsavel(responsavelRequest, null);
         Responsavel responsavel = Responsavel.builder()
                 .nome(responsavelRequest.getNome())
+                .titular(responsavelRequest.getTitular())
                 .build();
 
         responsavelRepository.persist(responsavel);
@@ -52,6 +53,7 @@ public class ResponsavelServiceImpl implements ResponsavelService {
         validaNomeResponsavel(responsavelRequest, id);
         try{
             responsavel.setNome(responsavelRequest.getNome());
+            responsavel.setTitular(responsavelRequest.getTitular());
             responsavelRepository.persist(responsavel);
         }catch (RuntimeException e){
             throw new RuntimeException(String.format(ERRO_AO_SALVAR));
